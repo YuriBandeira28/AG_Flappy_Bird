@@ -1,4 +1,4 @@
-# Flappy-Bird---Python
+# Flappy-Bird
 Recirando o famoso jogo Flappy bird usando python orientado a objetos
 
 ## Sobre o projeto
