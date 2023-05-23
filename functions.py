@@ -12,9 +12,9 @@ img_fundo = pygame.transform.scale(size=(275, 600), surface=pygame.image.load(os
 img_chao = pygame.transform.scale(size=(1100, 170),surface=pygame.image.load(os.path.join('imgs', 'base.png')))
 
 imgs_brid = [
-    pygame.transform.scale(size=(30,20), surface=pygame.image.load(os.path.join('imgs', 'bird1.png'))),
-    pygame.transform.scale(size=(30,20), surface=pygame.image.load(os.path.join('imgs', 'bird2.png'))),
-    pygame.transform.scale(size=(30,20), surface=pygame.image.load(os.path.join('imgs', 'bird3.png')))
+    pygame.image.load(os.path.join('imgs', 'bird1.png')),
+    pygame.image.load(os.path.join('imgs', 'bird2.png')),
+    pygame.image.load(os.path.join('imgs', 'bird3.png'))
 ]
 
 #texto pontuação
