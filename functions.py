@@ -7,14 +7,14 @@ win_height = 600 #altura
 win_width = 1000 #largura
  
 #carregando e alterando a escala das imagens
-img_cano = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'pipe.png')))
+img_cano = pygame.transform.scale(size=(50,400),surface=pygame.image.load(os.path.join('imgs', 'pipe.png')))
 img_fundo = pygame.transform.scale(size=(1000, 600), surface=pygame.image.load(os.path.join('imgs', 'bg.png')))
 img_chao = pygame.transform.scale(size=(1000, 200),surface=pygame.image.load(os.path.join('imgs', 'base.png')))
 
 imgs_brid = [
-    pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bird1.png'))),
-    pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bird2.png'))),
-    pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bird3.png')))
+    pygame.transform.scale(size=(30,20), surface=pygame.image.load(os.path.join('imgs', 'bird1.png'))),
+    pygame.transform.scale(size=(30,20), surface=pygame.image.load(os.path.join('imgs', 'bird2.png'))),
+    pygame.transform.scale(size=(30,20), surface=pygame.image.load(os.path.join('imgs', 'bird3.png')))
 ]
 
 #texto pontuação
@@ -46,9 +46,9 @@ class Bird:
         self.cont_img = 0
         self.img = self.imgs[0]
 
-    def junmp (self):
+    def jump (self):
 
-        self.velociade = -10.5
+        self.velociade = -8.9 
         self.tempo = 0
         self.altura = self.pos_y
 
@@ -60,11 +60,11 @@ class Bird:
         deslocamento = 1.5 * (self.tempo**2) + self.velociade * self.tempo
 
         #restringir o deslocamento
-        if deslocamento > 16:
-            deslocamento = 16
+        if deslocamento > 10:
+            deslocamento = 10
 
         elif deslocamento < 0:
-            deslocamento -=2 
+            deslocamento -=2
 
         self.pos_y += deslocamento
 
@@ -115,8 +115,8 @@ class Bird:
 
 class Pipe:
     
-    dist = 200 #de um cano para o outro
-    vel_move = 7
+    dist = 130 #de um cano para o outro
+    vel_move = 4
 
     def __init__(self, pos_x):
         self.pos_x = pos_x
@@ -183,6 +183,7 @@ class Base:
     def desenhar(self, tela):
         tela.blit(self.img, (self.x1, self.pos_y))
         tela.blit(self.img, (self.x2, self.pos_y))
+        
 class Fundo:
 
     velocidade = 4
@@ -230,7 +231,7 @@ def start():
     #instanciando as classes e criando variáveis
     birds = [Bird(100, 250)]
     base = Base(500)
-    pipes = [Pipe(500),Pipe(1000)]
+    pipes = [Pipe(300),Pipe(500),Pipe(750), Pipe(900)]
     tela = pygame.display.set_mode((win_width, win_height))
     pontos = 0
     relogio = pygame.time.Clock()
@@ -249,7 +250,7 @@ def start():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     for bird in birds:
-                        bird.junmp()
+                        bird.jump()
 
         #movimentação do pássaro
         for bird in birds:
