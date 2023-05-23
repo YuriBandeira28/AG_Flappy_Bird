@@ -295,6 +295,4 @@ def start():
                  
         desenhar_tela(tela, birds, pipes, base, pontos)
 
-if __name__ == '__main__':
-    
-    start() 
+
