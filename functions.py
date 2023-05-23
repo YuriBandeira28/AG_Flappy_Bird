@@ -4,12 +4,12 @@ import random
 import time
 
 win_height = 600 #altura
-win_width = 1000 #largura
+win_width = 1100 #largura
  
 #carregando e alterando a escala das imagens
 img_cano = pygame.transform.scale(size=(50,400),surface=pygame.image.load(os.path.join('imgs', 'pipe.png')))
-img_fundo = pygame.transform.scale(size=(1000, 600), surface=pygame.image.load(os.path.join('imgs', 'bg.png')))
-img_chao = pygame.transform.scale(size=(1000, 200),surface=pygame.image.load(os.path.join('imgs', 'base.png')))
+img_fundo = pygame.transform.scale(size=(275, 600), surface=pygame.image.load(os.path.join('imgs', 'bg.png')))
+img_chao = pygame.transform.scale(size=(1100, 170),surface=pygame.image.load(os.path.join('imgs', 'base.png')))
 
 imgs_brid = [
     pygame.transform.scale(size=(30,20), surface=pygame.image.load(os.path.join('imgs', 'bird1.png'))),
@@ -212,6 +212,9 @@ class Fundo:
 def desenhar_tela(tela, birds, pipes, base, pontos):
 
     tela.blit(img_fundo, (0, 0)) #desenhar fundo
+    tela.blit(img_fundo, (275, 0)) #desenhar fundo
+    tela.blit(img_fundo, (550, 0)) #desenhar fundo
+    tela.blit(img_fundo, (825, 0)) #desenhar fundo
 
     for bird in birds:
         bird.desenhar(tela) #desenhar pássaros
@@ -231,7 +234,7 @@ def start():
     #instanciando as classes e criando variáveis
     birds = [Bird(100, 250)]
     base = Base(500)
-    pipes = [Pipe(300),Pipe(500),Pipe(750), Pipe(900)]
+    pipes = [Pipe(300),Pipe(500),Pipe(700), Pipe(900), Pipe(1100)]
     tela = pygame.display.set_mode((win_width, win_height))
     pontos = 0
     relogio = pygame.time.Clock()
@@ -281,7 +284,7 @@ def start():
         
         if add_pipe:
             pontos += 1
-            pipes.append(Pipe(1000))
+            pipes.append(Pipe(1100))
         
         for pipe in remove_pipes:
             pipes.remove(pipe)
