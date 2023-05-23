@@ -1,14 +1,15 @@
 import pygame
 import os
 import random
+import time
 
-win_height = 800 #altura
-win_width = 500 #largura
-
+win_height = 600 #altura
+win_width = 1000 #largura
+ 
 #carregando e alterando a escala das imagens
 img_cano = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'pipe.png')))
-img_fundo = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bg.png')))
-img_chao = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'base.png')))
+img_fundo = pygame.transform.scale(size=(1000, 600), surface=pygame.image.load(os.path.join('imgs', 'bg.png')))
+img_chao = pygame.transform.scale(size=(1000, 200),surface=pygame.image.load(os.path.join('imgs', 'base.png')))
 
 imgs_brid = [
     pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bird1.png'))),
@@ -115,7 +116,7 @@ class Bird:
 class Pipe:
     
     dist = 200 #de um cano para o outro
-    vel_move = 5
+    vel_move = 7
 
     def __init__(self, pos_x):
         self.pos_x = pos_x
@@ -129,7 +130,7 @@ class Pipe:
         self.define_altura()
 
     def define_altura(self):
-        self.altura = random.randrange(50, 450)
+        self.altura = random.randrange(20, 250)
         self.pos_top  = self.altura - self.img_top.get_height()
         self.pos_base = self.altura + self.dist 
 
@@ -182,6 +183,30 @@ class Base:
     def desenhar(self, tela):
         tela.blit(self.img, (self.x1, self.pos_y))
         tela.blit(self.img, (self.x2, self.pos_y))
+class Fundo:
+
+    velocidade = 4
+    lalrgura = img_fundo.get_width()
+    img = img_fundo
+
+    def __init__(self, pos_y):
+        self.pos_y = pos_y
+        self.x1 = 0
+        self.x2 = self.lalrgura
+
+    def move(self):
+        self.x1 -= self.velocidade
+        self.x2 -= self.velocidade
+        
+        if self.x1 + self.lalrgura < 0:
+            self.x1 = self.x2 + self.lalrgura
+
+        if self.x2 + self.lalrgura < 0:
+            self.x2 = self.x1 + self.lalrgura
+
+    def desenhar(self, tela):
+        tela.blit(self.img, (self.x1, self.pos_y))
+        tela.blit(self.img, (self.x2, self.pos_y))
 
 def desenhar_tela(tela, birds, pipes, base, pontos):
 
@@ -202,16 +227,14 @@ def desenhar_tela(tela, birds, pipes, base, pontos):
 def start():
 
 
-
     #instanciando as classes e criando variáveis
-    birds = [Bird(230, 350)]
-    base = Base(730)
-    pipes = [Pipe(700)]
+    birds = [Bird(100, 250)]
+    base = Base(500)
+    pipes = [Pipe(500),Pipe(1000)]
     tela = pygame.display.set_mode((win_width, win_height))
     pontos = 0
     relogio = pygame.time.Clock()
 
-    
     rodando = True
     while rodando:
         relogio.tick(30)
@@ -245,6 +268,7 @@ def start():
                 if pipe.colider(bird):
                     birds.pop(i)
                     pygame.quit()
+                    
                 #verifica se o passaro ja passou do cano
                 if not pipe.passou and bird.pos_x > pipe.pos_x:
                     pipe.passou = True
@@ -256,19 +280,20 @@ def start():
         
         if add_pipe:
             pontos += 1
-            pipes.append(Pipe(600))
+            pipes.append(Pipe(1000))
         
         for pipe in remove_pipes:
             pipes.remove(pipe)
 
         
         for i, bird in enumerate(birds):
-            if (bird.pos_y + bird.img.get_height()) > 730 or bird.pos_y < 0:
+            if (bird.pos_y + bird.img.get_height()) > 500 or bird.pos_y < 0:
 
                 birds.pop(i)
                 pygame.quit()
-
+                 
         desenhar_tela(tela, birds, pipes, base, pontos)
 
 if __name__ == '__main__':
-    start()
+    
+    start() 
