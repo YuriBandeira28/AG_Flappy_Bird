@@ -2,10 +2,6 @@ import pygame
 import os
 import random
 import time
-import ag
-
-ia_jogando = True
-geracao = 0
 
 win_height = 600 #altura
 win_width = 1100 #largura
@@ -36,8 +32,6 @@ class Bird:
     rotacao_max = 25
     velocidade_rotacao = 20
     temp_animacao = 5
-    aptidao = 0
-    
 
     #atributos para o pássaro
 
@@ -118,6 +112,7 @@ class Bird:
         #define uma máscara para o pássaro (melhorando o sistema de colisão)
         return pygame.mask.from_surface(self.img)
         
+
 class Pipe:
     
     dist = 130 #de um cano para o outro
@@ -228,24 +223,16 @@ def desenhar_tela(tela, birds, pipes, base, pontos):
         pipe.desenhar(tela) #desenhar canos
     
     texto = fontes.render(f"Pontuação: {pontos}", 1, (255, 255, 255))
-    texto2 = fontes.render(f"Geração: {geracao}", 1, (255, 255, 255))
-
     tela.blit(texto, (win_width - 10 - texto.get_width(), 10)) #desenha o texto
-    tela.blit(texto2, (0, 10)) #desenha o texto
 
     base.desenhar(tela)
     pygame.display.update()
 
 def start():
-    remove_birds = []
 
-    global geracao 
-    geracao +=1
-    Pipe.vel_move = 4
+
     #instanciando as classes e criando variáveis
     birds = [Bird(100, 250)]
-    for i in range(10):
-        birds.append(Bird(100, 250))
     base = Base(500)
     pipes = [Pipe(300),Pipe(500),Pipe(700), Pipe(900), Pipe(1100)]
     tela = pygame.display.set_mode((win_width, win_height))
@@ -263,17 +250,14 @@ def start():
                 pygame.quit()
                 quit()
             #pulo do pássaro
-            if not ia_jogando:
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        for bird in birds:
-                            bird.jump()
-           
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    for bird in birds:
+                        bird.jump()
+
         #movimentação do pássaro
         for bird in birds:
             bird.move()
-
-                
 
         #movimentação do chão
         base.move()
@@ -286,31 +270,17 @@ def start():
             for i, bird in enumerate(birds):
                 #verifica colisores passaro e cano
                 if pipe.colider(bird):
-                    
-                    birds[i].aptidao -= 1
-                    remove_birds.append(birds[i].aptidao)
-
                     birds.pop(i)
-                    #pygame.quit()
+                    pygame.quit()
                     
                 #verifica se o passaro ja passou do cano
                 if not pipe.passou and bird.pos_x > pipe.pos_x:
                     pipe.passou = True
-                    bird.aptidao +=5
-                    
-                    Pipe.vel_move+=0.3
-                    if Pipe.vel_move >= 35:
-                        Pipe.vel_move = 35
                     add_pipe = True
-            
-                #print(f"passaro {i}", bird.aptidao)
 
             pipe.move()
-            
             if pipe.pos_x + pipe.img_top.get_width() < 0:
                 remove_pipes.append(pipe)
-                birds.pop(i)
-
         
         if add_pipe:
             pontos += 1
@@ -323,18 +293,8 @@ def start():
         for i, bird in enumerate(birds):
             if (bird.pos_y + bird.img.get_height()) > 500 or bird.pos_y < 0:
 
-                remove_birds.append(birds[i].aptidao)
                 birds.pop(i)
-                #pygame.quit()
+                pygame.quit()
                  
         desenhar_tela(tela, birds, pipes, base, pontos)
-        
-        if birds == []:
-            remove_birds = list(sorted(remove_birds, reverse=True))
-            melhores = (remove_birds[:2])            
-            ag.gera_pai(melhores)
-            for i, bird in enumerate(remove_birds):
-                remove_birds.pop(i)
-            start()
-
 
