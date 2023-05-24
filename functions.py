@@ -229,7 +229,7 @@ def desenhar_tela(tela, birds, pipes, base, pontos):
     pygame.display.update()
 
 def start():
-
+    Pipe.vel_move = 4
 
     #instanciando as classes e criando variáveis
     birds = [Bird(100, 250)]
@@ -276,6 +276,10 @@ def start():
                 #verifica se o passaro ja passou do cano
                 if not pipe.passou and bird.pos_x > pipe.pos_x:
                     pipe.passou = True
+                    Pipe.vel_move+=0.3
+                    if Pipe.vel_move >= 35:
+                        Pipe.vel_move = 35
+
                     add_pipe = True
 
             pipe.move()
