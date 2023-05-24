@@ -2,6 +2,7 @@ import pygame
 import os
 import random
 import time
+import ag
 
 ia_jogando = True
 geracao = 0
@@ -236,6 +237,8 @@ def desenhar_tela(tela, birds, pipes, base, pontos):
     pygame.display.update()
 
 def start():
+    remove_birds = []
+
     global geracao 
     geracao +=1
     Pipe.vel_move = 4
@@ -266,16 +269,11 @@ def start():
                         for bird in birds:
                             bird.jump()
            
-        
-            
         #movimentação do pássaro
         for bird in birds:
             bird.move()
-            if ia_jogando:
-                bird.aptidao +=0.1
-                pula = random.random()
-                if pula >0.9:
-                    bird.jump()
+
+                
 
         #movimentação do chão
         base.move()
@@ -290,6 +288,8 @@ def start():
                 if pipe.colider(bird):
                     
                     birds[i].aptidao -= 1
+                    remove_birds.append(birds[i].aptidao)
+
                     birds.pop(i)
                     #pygame.quit()
                     
@@ -303,12 +303,14 @@ def start():
                         Pipe.vel_move = 35
                     add_pipe = True
             
-                print(f"passaro {i}", bird.aptidao)
+                #print(f"passaro {i}", bird.aptidao)
 
             pipe.move()
             
             if pipe.pos_x + pipe.img_top.get_width() < 0:
                 remove_pipes.append(pipe)
+                birds.pop(i)
+
         
         if add_pipe:
             pontos += 1
@@ -321,11 +323,18 @@ def start():
         for i, bird in enumerate(birds):
             if (bird.pos_y + bird.img.get_height()) > 500 or bird.pos_y < 0:
 
+                remove_birds.append(birds[i].aptidao)
                 birds.pop(i)
                 #pygame.quit()
                  
         desenhar_tela(tela, birds, pipes, base, pontos)
+        
         if birds == []:
+            remove_birds = list(sorted(remove_birds, reverse=True))
+            melhores = (remove_birds[:2])            
+            ag.gera_pai(melhores)
+            for i, bird in enumerate(remove_birds):
+                remove_birds.pop(i)
             start()
 
 

@@ -2,8 +2,6 @@ import random
 import numpy as np
 
 
-
-
 def define_neuronio():
     pesos = [[0,0], [0,0], [0,0]] #0 - A, 1 - B, 2 -C
 
@@ -37,6 +35,7 @@ def define_neuronio():
     neuronio['B']['pesos'] = peso_b
     neuronio['C']['pesos'] = peso_c
     
+    print(neuronio)
     return neuronio
 
 def sigmoid(x):
@@ -55,5 +54,6 @@ def training(distancia_x, distancia_y, neuronio):
     # cálculo da ativação e saída da última camada
     neuronio['C']['ativacao'] = neuronio['C']['pesos'][0]*neuronio['A']['saida'] + neuronio['C']['pesos'][1]*neuronio['B']['saida'] + neuronio['C']['bias']
     neuronio['C']['saida'] = sigmoid(neuronio['C']['ativacao'])
-
-
+    
+    print(neuronio['C']['saida'])
+    
