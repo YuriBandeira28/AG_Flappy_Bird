@@ -1,7 +1,7 @@
 import pygame
 import os
 import random
-import ag
+import rede_neural
 
 ia_jogando = True
 geracao = 0
@@ -257,7 +257,7 @@ def start(genomas):
 
         for genoma in genomas:
             #rede = neat.nn.FeedForwardNetwork.create(genoma, config)
-            rede = ag.rede_neural()
+            rede = rede_neural.rede_neural()
             redes.append(rede)
             rede = None
             genoma.fitness = 0 
@@ -310,7 +310,7 @@ def start(genomas):
             list_genomas[i].fitness +=0.1
 
             #output = redes[i].activate((bird.pos_y, abs(bird.pos_y - pipes[indice_pipe].altura), abs(bird.pos_y - pipes[indice_pipe].pos_base)))
-            output = ag.calcula_ativacao(dist_x=(bird.pos_y - pipes[indice_pipe].altura), 
+            output = rede_neural.calcula_ativacao(dist_x=(bird.pos_y - pipes[indice_pipe].altura), 
                                                      dist_y=abs(bird.pos_y - pipes[indice_pipe].pos_base),
                                                      bias=redes[i][0],
                                                      pesos=redes[i][1])
@@ -385,7 +385,7 @@ def start(genomas):
                 
                 indice_melhor = list_genomas_reserva.index(max(list_genomas_reserva))
                 
-                ag.evolui(indice_melhor, birds_reserva, list_genomas_reserva, redes_reserva)
+                rede_neural.evolui(indice_melhor, birds_reserva, list_genomas_reserva, redes_reserva)
                 birds_reserva.clear()
                 list_genomas_reserva.clear()
                 redes_reserva.clear()
@@ -405,7 +405,7 @@ def rodar():
     #populacao.add_reporter(neat.StdOutReporter(True))
     #populacao.add_reporter(neat.StatisticsReporter())
 
-    populacao = ag.Genoma.start_população(30)
+    populacao = rede_neural.Genoma.start_população(30)
     if ia_jogando:
         start(genomas=populacao)
     else:
