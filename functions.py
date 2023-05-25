@@ -233,6 +233,8 @@ def desenhar_tela(tela, birds, pipes, base, pontos):
     if ia_jogando:
         texto2 = fontes.render(f"Geração: {geracao}", 1, (255, 255, 255))
         tela.blit(texto2, (0, 10)) #desenha o texto
+        texto3 = fontes.render(f"Pássaros: {len(birds)}", 1, (255, 255, 255))
+        tela.blit(texto3, (0, 60)) #desenha o texto
 
     tela.blit(texto, (win_width - 10 - texto.get_width(), 10)) #desenha o texto
 
@@ -271,7 +273,7 @@ def start(genomas):
     else:
         birds = [Bird(100, 400)]
     base = Base(500)
-    pipes = [Pipe(300),Pipe(500),Pipe(700), Pipe(900)]
+    pipes = [Pipe(300),Pipe(500),Pipe(700), Pipe(900), Pipe(1100)]
     tela = pygame.display.set_mode((win_width, win_height))
     pontos = 0
     relogio = pygame.time.Clock()

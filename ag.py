@@ -25,9 +25,9 @@ def rede_neural():
     bias = [random.random(), random.random(), random.random()]
     
     pesos = {
-        'A': [random.random(), random.random()],
-        'B': [random.random(), random.random()],
-        'C': [random.random(), random.random()]
+        'A': [random.uniform(-1.2,1.2), random.uniform(-1.2,1.2)],
+        'B': [random.uniform(-1.2,1.2), random.uniform(-1.2,1.2)],
+        'C': [random.uniform(-1.2,1.2), random.uniform(-1.2,1.2)]
     }
     
     return bias, pesos
@@ -46,6 +46,8 @@ def calcula_ativacao(dist_x, dist_y, bias, pesos):
 
 
 def evolui(melhor_individuo, birds, genomas, redes):
+    tx_mut = 0.1
+    
     print(redes[melhor_individuo][1])
 
 
