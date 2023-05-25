@@ -2,10 +2,17 @@ import pygame
 import os
 import random
 import time
+import neat
+
+ia_jogando = True
+geracao = 0
+
 
 win_height = 600 #altura
 win_width = 1100 #largura
  
+
+
 #carregando e alterando a escala das imagens
 img_cano = pygame.transform.scale(size=(50,400),surface=pygame.image.load(os.path.join('imgs', 'pipe.png')))
 img_fundo = pygame.transform.scale(size=(275, 600), surface=pygame.image.load(os.path.join('imgs', 'bg.png')))
@@ -111,7 +118,6 @@ class Bird:
     def get_mask(self):
         #define uma máscara para o pássaro (melhorando o sistema de colisão)
         return pygame.mask.from_surface(self.img)
-        
 
 class Pipe:
     
@@ -223,23 +229,44 @@ def desenhar_tela(tela, birds, pipes, base, pontos):
         pipe.desenhar(tela) #desenhar canos
     
     texto = fontes.render(f"Pontuação: {pontos}", 1, (255, 255, 255))
+    if ia_jogando:
+        texto2 = fontes.render(f"Geração: {geracao}", 1, (255, 255, 255))
+        tela.blit(texto2, (0, 10)) #desenha o texto
+
     tela.blit(texto, (win_width - 10 - texto.get_width(), 10)) #desenha o texto
 
     base.desenhar(tela)
     pygame.display.update()
 
-def start():
+def start(genomas, config):
+    Pipe.vel_move = 4
 
+    global geracao
+    geracao +=1
 
     #instanciando as classes e criando variáveis
-    birds = [Bird(100, 250)]
+    if ia_jogando:
+        redes = [] 
+        list_genomas = []
+        birds = []
+
+        for _, genoma in genomas:
+            rede = neat.nn.FeedForwardNetwork.create(genoma, config)
+            redes.append(rede)
+            genoma.fitness = 0 
+            list_genomas.append(genoma)
+            birds.append(Bird(230, 350))
+
+    else:
+        birds = [Bird(230, 350)]
     base = Base(500)
-    pipes = [Pipe(300),Pipe(500),Pipe(700), Pipe(900), Pipe(1100)]
+    pipes = [Pipe(300),Pipe(500),Pipe(700), Pipe(900)]
     tela = pygame.display.set_mode((win_width, win_height))
     pontos = 0
     relogio = pygame.time.Clock()
 
     rodando = True
+
     while rodando:
         relogio.tick(30)
 
@@ -250,14 +277,31 @@ def start():
                 pygame.quit()
                 quit()
             #pulo do pássaro
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    for bird in birds:
-                        bird.jump()
+            if not ia_jogando:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        for bird in birds:
+                            bird.jump()
+        indice_pipe = 0
+        if len(birds) > 0:
+            for bird in birds:
+                if len(pipes) > 1 and birds[0].pos_x > (pipes[0].pos_x + pipes[0].img_top.get_width()):
+                    indice_pipe = 1
+        else:
+            rodando = False
+            break
+
 
         #movimentação do pássaro
-        for bird in birds:
+        ##AQUI RECEBE INFO E DECIDE SE PULA OU NAO
+        for i, bird in enumerate(birds):
             bird.move()
+            list_genomas[i].fitness +=0.1
+
+            output = redes[i].activate((bird.pos_y, abs(bird.pos_y - pipes[indice_pipe].altura), abs(bird.pos_y - pipes[indice_pipe].pos_base)))
+    
+            if output[0] > 0.5:
+                bird.jump()
 
         #movimentação do chão
         base.move()
@@ -271,11 +315,19 @@ def start():
                 #verifica colisores passaro e cano
                 if pipe.colider(bird):
                     birds.pop(i)
-                    pygame.quit()
+                    if ia_jogando:
+                        list_genomas[i].fitness -=1
+                        list_genomas.pop(i)
+                        redes.pop(i)
                     
                 #verifica se o passaro ja passou do cano
                 if not pipe.passou and bird.pos_x > pipe.pos_x:
                     pipe.passou = True
+                    # aumenta velocidade
+                    Pipe.vel_move+=0.1
+                    if Pipe.vel_move >= 28:
+                        Pipe.vel_move = 28
+
                     add_pipe = True
 
             pipe.move()
@@ -285,17 +337,36 @@ def start():
         if add_pipe:
             pontos += 1
             pipes.append(Pipe(1100))
+            if ia_jogando:
+                for genoma in list_genomas:
+                    genoma.fitness +=5
         
         for pipe in remove_pipes:
             pipes.remove(pipe)
 
         
         for i, bird in enumerate(birds):
-            if (bird.pos_y + bird.img.get_height()) > 500 or bird.pos_y < 0:
-
+            if (bird.pos_y + bird.img.get_height()) > 730 or bird.pos_y < 0:
                 birds.pop(i)
-                pygame.quit()
+                if ia_jogando:
+                    list_genomas.pop(i)
+                    redes.pop(i)
                  
         desenhar_tela(tela, birds, pipes, base, pontos)
 
+def rodar(caminho_config):
+    config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction, neat.DefaultSpeciesSet, neat.DefaultStagnation, caminho_config)
 
+    populacao = neat.Population(config)
+    populacao.add_reporter(neat.StdOutReporter(True))
+    populacao.add_reporter(neat.StatisticsReporter())
+
+    if ia_jogando:
+        populacao.run(start)
+    else:
+        start(None, None)
+
+
+if __name__ == '__main__':
+    caminho_config = "config.txt"
+    rodar(caminho_config)
