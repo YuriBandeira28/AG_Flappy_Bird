@@ -20,20 +20,24 @@ class Genoma():
             
         return genomas
 
-def rede_neural():
+def rede_neural(pesos = None):
     
-    bias = [random.random(), random.random(), random.random()]
+    bias = [random.uniform(-1.2,1.2), random.uniform(-1.2,1.2), random.uniform(-1.2,1.2)]
     
-    pesos = {
-        'A': [random.uniform(-1.2,1.2), random.uniform(-1.2,1.2)],
-        'B': [random.uniform(-1.2,1.2), random.uniform(-1.2,1.2)],
-        'C': [random.uniform(-1.2,1.2), random.uniform(-1.2,1.2)]
-    }
     #pesos = {
-    #'A': [random.random(), random.random()],
-    #'B': [random.random(), random.random()],
-    #'C': [random.random(), random.random()]
+    #    'A': [random.uniform(-1.2,1.2), random.uniform(-1.2,1.2)],
+    #    'B': [random.uniform(-1.2,1.2), random.uniform(-1.2,1.2)],
+    #    'C': [random.uniform(-1.2,1.2), random.uniform(-1.2,1.2)]
     #}
+    if pesos == None:
+        pesos = {
+        'A': [random.uniform(0, 1), random.uniform(0, 1)],
+        'B': [random.uniform(0, 1), random.uniform(0, 1)],
+        'C': [random.uniform(0, 1), random.uniform(0, 1)]
+        }
+    else:
+        pesos = pesos
+        
     
     return bias, pesos
         

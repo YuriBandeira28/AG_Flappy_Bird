@@ -2,6 +2,7 @@ import pygame
 import os
 import random
 import rede_neural
+import ag
 
 ia_jogando = True
 geracao = 0
@@ -120,7 +121,7 @@ class Bird:
 
 class Pipe:
     
-    dist = 130 #de um cano para o outro
+    dist = 120 #de um cano para o outro
     vel_move = 4
 
     def __init__(self, pos_x):
@@ -239,7 +240,7 @@ def desenhar_tela(tela, birds, pipes, base, pontos):
     base.desenhar(tela)
     pygame.display.update()
 
-def start(genomas):
+def start(genomas, redes_atualizadas):
     Pipe.vel_move = 4
 
     global geracao
@@ -254,16 +255,19 @@ def start(genomas):
         birds_reserva = []
         redes_reserva = []
         list_genomas_reserva = []
-
+       
         for genoma in genomas:
             #rede = neat.nn.FeedForwardNetwork.create(genoma, config)
-            rede = rede_neural.rede_neural()
+            if redes_atualizadas == None:
+                rede = rede_neural.rede_neural()
+            else:
+                rede = redes_atualizadas
             redes.append(rede)
             rede = None
             genoma.fitness = 0 
             list_genomas.append(genoma)
             birds.append(Bird(100, 350))
-            
+                
         for rede in redes:
             #print(rede[1])
             pass
@@ -358,6 +362,7 @@ def start(genomas):
         if add_pipe:
             pontos += 1
             pipes.append(Pipe(1100))
+            
             if ia_jogando:
                 for genoma in list_genomas:
                     genoma.fitness +=5
@@ -378,41 +383,38 @@ def start(genomas):
             #print(f"passaro {i} pontuou:", list_genomas[i].fitness) 
             pass
         if birds == []:
+            rede_nova = None
             for i, rede in enumerate(redes_reserva):
                 #print(f"rede {i} - ",redes_reserva[i][1])
                 pass
             if len(list_genomas_reserva) > 0 and len(redes_reserva) > 0:
                 
-                indice_melhor = list_genomas_reserva.index(max(list_genomas_reserva))
                 
-                rede_neural.evolui(indice_melhor, birds_reserva, list_genomas_reserva, redes_reserva)
-                birds_reserva.clear()
-                list_genomas_reserva.clear()
-                redes_reserva.clear()
+                melhor = ag.selecao(list_genomas_reserva)
+                if redes_reserva != None:
+                    rede_nova = ag.mutacao(redes_reserva[melhor], 0.5) 
+                #ag.evolui(indice_melhor, birds_reserva, list_genomas_reserva, redes_reserva)
+                #birds_reserva.clear()
+                #list_genomas_reserva.clear()
+                #redes_reserva.clear()
                 
 
-            rodar()  
+            rodar(rede_nova)  
         desenhar_tela(tela, birds, pipes, base, pontos)
             
         
 
-def rodar():
-    #caminho_config  =====parametro da funcao
+def rodar(rede):
+
     
-    #config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction, neat.DefaultSpeciesSet, neat.DefaultStagnation, caminho_config)
-
-    #populacao = neat.Population(config)
-    #populacao.add_reporter(neat.StdOutReporter(True))
-    #populacao.add_reporter(neat.StatisticsReporter())
-
-    populacao = rede_neural.Genoma.start_população(30)
     if ia_jogando:
-        start(genomas=populacao)
+        populacao = rede_neural.Genoma.start_população(30)
+        start(genomas=populacao, redes_atualizadas = rede)
     else:
-        start(None)
+        start(None, None)
 
 
 if __name__ == '__main__':
     #caminho_config = "config.txt"
     #rodar(caminho_config)
-    rodar()
+    rodar(None)
