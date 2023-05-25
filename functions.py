@@ -1,8 +1,6 @@
 import pygame
 import os
 import random
-import time
-import neat
 import ag
 
 ia_jogando = True
