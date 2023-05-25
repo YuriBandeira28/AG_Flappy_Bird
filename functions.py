@@ -3,6 +3,7 @@ import os
 import random
 import time
 import neat
+import ag
 
 ia_jogando = True
 geracao = 0
@@ -238,7 +239,7 @@ def desenhar_tela(tela, birds, pipes, base, pontos):
     base.desenhar(tela)
     pygame.display.update()
 
-def start(genomas, config):
+def start(genomas):
     Pipe.vel_move = 4
 
     global geracao
@@ -249,16 +250,26 @@ def start(genomas, config):
         redes = [] 
         list_genomas = []
         birds = []
+        
+        birds_reserva = []
+        redes_reserva = []
+        list_genomas_reserva = []
 
-        for _, genoma in genomas:
-            rede = neat.nn.FeedForwardNetwork.create(genoma, config)
+        for genoma in genomas:
+            #rede = neat.nn.FeedForwardNetwork.create(genoma, config)
+            rede = ag.rede_neural()
             redes.append(rede)
+            rede = None
             genoma.fitness = 0 
             list_genomas.append(genoma)
-            birds.append(Bird(230, 350))
+            birds.append(Bird(100, 350))
+            
+        for rede in redes:
+            #print(rede[1])
+            pass
 
     else:
-        birds = [Bird(230, 350)]
+        birds = [Bird(100, 400)]
     base = Base(500)
     pipes = [Pipe(300),Pipe(500),Pipe(700), Pipe(900)]
     tela = pygame.display.set_mode((win_width, win_height))
@@ -266,10 +277,10 @@ def start(genomas, config):
     relogio = pygame.time.Clock()
 
     rodando = True
-
+    
+    
     while rodando:
         relogio.tick(30)
-
         #fechar a janela
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -298,11 +309,14 @@ def start(genomas, config):
             bird.move()
             list_genomas[i].fitness +=0.1
 
-            output = redes[i].activate((bird.pos_y, abs(bird.pos_y - pipes[indice_pipe].altura), abs(bird.pos_y - pipes[indice_pipe].pos_base)))
-    
-            if output[0] > 0.5:
+            #output = redes[i].activate((bird.pos_y, abs(bird.pos_y - pipes[indice_pipe].altura), abs(bird.pos_y - pipes[indice_pipe].pos_base)))
+            output = ag.calcula_ativacao(dist_x=(bird.pos_y - pipes[indice_pipe].altura), 
+                                                     dist_y=abs(bird.pos_y - pipes[indice_pipe].pos_base),
+                                                     bias=redes[i][0],
+                                                     pesos=redes[i][1])
+            if output > 0.5:
                 bird.jump()
-
+            
         #movimentação do chão
         base.move()
 
@@ -314,11 +328,18 @@ def start(genomas, config):
             for i, bird in enumerate(birds):
                 #verifica colisores passaro e cano
                 if pipe.colider(bird):
-                    birds.pop(i)
                     if ia_jogando:
+                        birds_reserva.append(bird)
+                        birds.pop(i)
+                        
                         list_genomas[i].fitness -=1
+                        list_genomas_reserva.append(genomas[i].fitness)
                         list_genomas.pop(i)
+                        
+                        redes_reserva.append(redes[i])
                         redes.pop(i)
+                    else:
+                        birds.pop(i)
                     
                 #verifica se o passaro ja passou do cano
                 if not pipe.passou and bird.pos_x > pipe.pos_x:
@@ -351,22 +372,47 @@ def start(genomas, config):
                 if ia_jogando:
                     list_genomas.pop(i)
                     redes.pop(i)
-                 
+        
+        for i, bird in enumerate(birds):
+            #print("nuero de passaros -", len(birds))
+            #print(f"passaro {i} pontuou:", list_genomas[i].fitness) 
+            pass
+        if birds == []:
+            for i, rede in enumerate(redes_reserva):
+                #print(f"rede {i} - ",redes_reserva[i][1])
+                pass
+            if len(list_genomas_reserva) > 0 and len(redes_reserva) > 0:
+                
+                indice_melhor = list_genomas_reserva.index(max(list_genomas_reserva))
+                
+                ag.evolui(indice_melhor, birds_reserva, list_genomas_reserva, redes_reserva)
+                birds_reserva.clear()
+                list_genomas_reserva.clear()
+                redes_reserva.clear()
+                
+
+            rodar()  
         desenhar_tela(tela, birds, pipes, base, pontos)
+            
+        
 
-def rodar(caminho_config):
-    config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction, neat.DefaultSpeciesSet, neat.DefaultStagnation, caminho_config)
+def rodar():
+    #caminho_config  =====parametro da funcao
+    
+    #config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction, neat.DefaultSpeciesSet, neat.DefaultStagnation, caminho_config)
 
-    populacao = neat.Population(config)
-    populacao.add_reporter(neat.StdOutReporter(True))
-    populacao.add_reporter(neat.StatisticsReporter())
+    #populacao = neat.Population(config)
+    #populacao.add_reporter(neat.StdOutReporter(True))
+    #populacao.add_reporter(neat.StatisticsReporter())
 
+    populacao = ag.Genoma.start_população(30)
     if ia_jogando:
-        populacao.run(start)
+        start(genomas=populacao)
     else:
-        start(None, None)
+        start(None)
 
 
 if __name__ == '__main__':
-    caminho_config = "config.txt"
-    rodar(caminho_config)
+    #caminho_config = "config.txt"
+    #rodar(caminho_config)
+    rodar()
