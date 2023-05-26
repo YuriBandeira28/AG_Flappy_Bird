@@ -1,5 +1,5 @@
-from functions import start
+from functions import rodar
 
 if __name__ == '__main__':
        
-    start()
+    rodar(None)

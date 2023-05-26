@@ -3,7 +3,6 @@ import os
 import random
 import rede_neural
 import ag
-import numpy as np
 
 
 ia_jogando = True
@@ -354,9 +353,9 @@ def start(genomas, redes_atualizadas):
                 if not pipe.passou and (bird.pos_x > pipe.pos_x -10):
                     pipe.passou = True
                     # aumenta velocidade
-                    Pipe.vel_move+=0.2
-                    if Pipe.vel_move >= 10:
-                        Pipe.vel_move = 10
+                    #Pipe.vel_move+=0.2
+                    #if Pipe.vel_move >= 10:
+                    #    Pipe.vel_move = 10
 
                     add_pipe = True
 
@@ -402,10 +401,10 @@ def start(genomas, redes_atualizadas):
                     melhores_redes.append(melhores_redes_aux)
                 
                 melhor = ag.selecao(list_genomas_reserva)
-                tx_mut = 0.01
-                if random.random() < tx_mut:  
-                    rede_nova = ag.mutacao(redes_reserva[melhor], tx_mut, melhores_redes) 
-                    melhores_redes.append(rede_nova)
+                tx_mut = 0.5
+                #if random.random() < tx_mut:  
+                rede_nova = ag.mutacao(redes_reserva[melhor], tx_mut, melhores_redes) 
+                melhores_redes.append(rede_nova)
             
                 #list_genomas_reserva.clear()
                 #redes_reserva.clear()
@@ -424,9 +423,3 @@ def rodar(rede):
         start(genomas=populacao, redes_atualizadas = rede)
     else:
         start(None, None)
-
-
-if __name__ == '__main__':
-    #caminho_config = "config.txt"
-    #rodar(caminho_config)
-    rodar(None)
