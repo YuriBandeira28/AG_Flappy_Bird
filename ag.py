@@ -31,14 +31,14 @@ def selecao(genomas):
         melhor = genomas.index(melhores[1])
     
 
-    print("melhores - ", melhor1)
+    print(f"melhor - {genomas[melhor]} \n")
     
     return melhor
-def cruzamento(melhor):
-    pass
+
 
 def mutacao(rede, tx_mut, geração, melhores_redes):
 
+    print(f"REDE ANTES DA MUTAÇÃO {rede} \n")
     if melhores_redes != []:
         pesos = {
             'A': [None, None],
@@ -50,23 +50,21 @@ def mutacao(rede, tx_mut, geração, melhores_redes):
             b = b * tx_mut
             bias.append(b)
 
-        if geração <= 3:
-            pesos['A'][0] = (rede[1]['A'][0] / tx_mut) - (rede[1]['A'][0] / 2)
-            pesos['A'][1] = (rede[1]['A'][1] / tx_mut) - (rede[1]['A'][1] / 2)
-            
-            pesos['B'][0] = (rede[1]['B'][0] / tx_mut) - (rede[1]['B'][0] /2)
-            pesos['B'][1] = (rede[1]['B'][1] / tx_mut) - (rede[1]['B'][1] /2)
-            
-            pesos['C'][0] = (rede[1]['C'][0] / tx_mut) - (rede[1]['C'][0] /2)
-            pesos['C'][1] = (rede[1]['C'][1] / tx_mut) - (rede[1]['C'][1] /2)
+        if geração <= 5:
+            pesos['A'][0] = rede[1]['A'][0] - ((rede[1]['A'][0] * 0.5) * tx_mut)
+            pesos['A'][1] = rede[1]['A'][1] - ((rede[1]['A'][1] * 0.5) * tx_mut)
+            pesos['B'][0] = rede[1]['B'][0] - ((rede[1]['B'][0] * 0.5) * tx_mut)
+            pesos['B'][1] = rede[1]['B'][1] - ((rede[1]['B'][1] * 0.5) * tx_mut)
+            pesos['C'][0] = rede[1]['C'][0] - ((rede[1]['C'][0] * 0.5) * tx_mut)
+            pesos['C'][1] = rede[1]['C'][1] - ((rede[1]['C'][1] * 0.5) * tx_mut)
         else:
             print("entrou aqui")
-            pesos['A'][0] = (rede[1]['A'][0] / tx_mut) - random.uniform(-1,1) 
-            pesos['A'][1] = (rede[1]['A'][0] / tx_mut) - random.uniform(-1,1)
-            pesos['B'][0] = (rede[1]['A'][0] / tx_mut) - random.uniform(-1,1)
-            pesos['B'][1] = (rede[1]['A'][0] / tx_mut) - random.uniform(-1,1)
-            pesos['C'][0] = (rede[1]['A'][0] / tx_mut) - random.uniform(-1,1)
-            pesos['C'][1] = (rede[1]['A'][0] / tx_mut) - random.uniform(-1,1)
+            pesos['A'][0] = rede[1]['A'][0] - ((rede[1]['A'][0] * 0.5) * (tx_mut * random.random()) - random.uniform(-1,1))
+            pesos['A'][1] = rede[1]['A'][1] - ((rede[1]['A'][1] * 0.5) * (tx_mut * random.random()) - random.uniform(-1,1))
+            pesos['B'][0] = rede[1]['B'][0] - ((rede[1]['B'][0] * 0.5) * (tx_mut * random.random()) - random.uniform(-1,1))
+            pesos['B'][1] = rede[1]['B'][1] - ((rede[1]['B'][1] * 0.5) * (tx_mut * random.random()) - random.uniform(-1,1))
+            pesos['C'][0] = rede[1]['C'][0] - ((rede[1]['C'][0] * 0.5) * (tx_mut * random.random()) - random.uniform(-1,1))
+            pesos['C'][1] = rede[1]['C'][1] - ((rede[1]['C'][1] * 0.5) * (tx_mut * random.random()) - random.uniform(-1,1))
 
         print(pesos)
         

@@ -341,8 +341,8 @@ def start(genomas, redes_atualizadas):
                         birds_reserva.append(bird)
                         birds.pop(i)
                         
-                        list_genomas[i].fitness -=5
-                        list_genomas_reserva.append(genomas[i].fitness)
+                        list_genomas[i].fitness -=1
+                        list_genomas_reserva.append(list_genomas[i].fitness)
                         list_genomas.pop(i)
                         
                         redes_reserva.append(redes[i])
@@ -354,7 +354,7 @@ def start(genomas, redes_atualizadas):
                 if not pipe.passou and bird.pos_x > pipe.pos_x:
                     pipe.passou = True
                     # aumenta velocidade
-                    Pipe.vel_move+=0.1
+                    Pipe.vel_move+=0.5
                     if Pipe.vel_move >= 28:
                         Pipe.vel_move = 28
 
@@ -400,11 +400,10 @@ def start(genomas, redes_atualizadas):
                     melhores_redes.clear()
                 
                 melhor = ag.selecao(list_genomas_reserva)
-                rede_nova = ag.mutacao(redes_reserva[melhor], 0.5, geracao_consecutiva, melhores_redes) 
+                rede_nova = ag.mutacao(redes_reserva[melhor], 0.1, geracao_consecutiva, melhores_redes) 
                 melhores_redes.append(rede_nova)
-                print("melhores redes - ", melhores_redes)
 
-                if geracao_consecutiva == 7:
+                if geracao_consecutiva == 6:
                     geracao_consecutiva = 0
             
                 #ag.evolui(indice_melhor, birds_reserva, list_genomas_reserva, redes_reserva)
