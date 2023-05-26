@@ -3,6 +3,8 @@ import os
 import random
 import rede_neural
 import ag
+import numpy as np
+
 
 ia_jogando = True
 geracao = 0
@@ -154,8 +156,8 @@ class Pipe:
         top_mask = pygame.mask.from_surface(self.img_top)
         base_mask = pygame.mask.from_surface(self.img_base)
 
-        distancia_top = (round(self.pos_x) - round(bird.pos_x), round(self.pos_top) - round(bird.pos_y))
-        distancia_base = (round(self.pos_x) - round(bird.pos_x), round(self.pos_base) - round(bird.pos_y))
+        distancia_top = ((round(self.pos_x) - round(bird.pos_x)) - 20, (round(self.pos_top) - round(bird.pos_y)) - 10)
+        distancia_base = ((round(self.pos_x) - round(bird.pos_x)) - 20, (round(self.pos_base) - round(bird.pos_y)) - 10)
 
         base_point_colider = bird_mask.overlap(base_mask, distancia_base)
         top_point_colider = bird_mask.overlap(top_mask, distancia_top)
@@ -241,7 +243,6 @@ def desenhar_tela(tela, birds, pipes, base, pontos):
     pygame.display.update()
 
 list_genomas_reserva = []
-birds_reserva = []
 redes_reserva = []
 melhores_redes = []
 geracao_consecutiva = 0
@@ -257,7 +258,7 @@ def start(genomas, redes_atualizadas):
         list_genomas = []
         birds = []
         global list_genomas_reserva
-        global birds_reserva
+
         global redes_reserva
         global melhores_redes
         global geracao_consecutiva
@@ -338,7 +339,6 @@ def start(genomas, redes_atualizadas):
                 #verifica colisores passaro e cano
                 if pipe.colider(bird):
                     if ia_jogando:
-                        birds_reserva.append(bird)
                         birds.pop(i)
                         
                         list_genomas[i].fitness -=1
@@ -351,12 +351,12 @@ def start(genomas, redes_atualizadas):
                         birds.pop(i)
                     
                 #verifica se o passaro ja passou do cano
-                if not pipe.passou and bird.pos_x > pipe.pos_x:
+                if not pipe.passou and (bird.pos_x > pipe.pos_x -10):
                     pipe.passou = True
                     # aumenta velocidade
-                    Pipe.vel_move+=0.5
-                    if Pipe.vel_move >= 28:
-                        Pipe.vel_move = 28
+                    Pipe.vel_move+=0.2
+                    if Pipe.vel_move >= 10:
+                        Pipe.vel_move = 10
 
                     add_pipe = True
 
@@ -395,19 +395,18 @@ def start(genomas, redes_atualizadas):
             if len(list_genomas_reserva) > 0 and len(redes_reserva) > 0:
                 
                 
-                geracao_consecutiva +=1
+               
                 if len(melhores_redes) >4:
+                    melhores_redes_aux = melhores_redes[len(melhores_redes) -1]
                     melhores_redes.clear()
+                    melhores_redes.append(melhores_redes_aux)
                 
                 melhor = ag.selecao(list_genomas_reserva)
-                rede_nova = ag.mutacao(redes_reserva[melhor], 0.1, geracao_consecutiva, melhores_redes) 
-                melhores_redes.append(rede_nova)
-
-                if geracao_consecutiva == 6:
-                    geracao_consecutiva = 0
+                tx_mut = 0.01
+                if random.random() < tx_mut:  
+                    rede_nova = ag.mutacao(redes_reserva[melhor], tx_mut, melhores_redes) 
+                    melhores_redes.append(rede_nova)
             
-                #ag.evolui(indice_melhor, birds_reserva, list_genomas_reserva, redes_reserva)
-                #birds_reserva.clear()
                 #list_genomas_reserva.clear()
                 #redes_reserva.clear()
                 
