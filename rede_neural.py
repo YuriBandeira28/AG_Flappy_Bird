@@ -23,7 +23,6 @@ class Genoma():
 def rede_neural(pesos = None):
     
     bias = [random.uniform(-1.2,1.2), random.uniform(-1.2,1.2), random.uniform(-1.2,1.2)]
-    
     #pesos = {
     #    'A': [random.uniform(-1.2,1.2), random.uniform(-1.2,1.2)],
     #    'B': [random.uniform(-1.2,1.2), random.uniform(-1.2,1.2)],
@@ -35,6 +34,7 @@ def rede_neural(pesos = None):
         'B': [random.uniform(0, 1), random.uniform(0, 1)],
         'C': [random.uniform(0, 1), random.uniform(0, 1)]
         }
+       
     else:
         pesos = pesos
         

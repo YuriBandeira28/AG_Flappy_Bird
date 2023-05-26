@@ -240,6 +240,11 @@ def desenhar_tela(tela, birds, pipes, base, pontos):
     base.desenhar(tela)
     pygame.display.update()
 
+list_genomas_reserva = []
+birds_reserva = []
+redes_reserva = []
+melhores_redes = []
+geracao_consecutiva = 0
 def start(genomas, redes_atualizadas):
     Pipe.vel_move = 4
 
@@ -251,11 +256,11 @@ def start(genomas, redes_atualizadas):
         redes = [] 
         list_genomas = []
         birds = []
-        
-        birds_reserva = []
-        redes_reserva = []
-        list_genomas_reserva = []
-       
+        global list_genomas_reserva
+        global birds_reserva
+        global redes_reserva
+        global melhores_redes
+        global geracao_consecutiva
         for genoma in genomas:
             #rede = neat.nn.FeedForwardNetwork.create(genoma, config)
             if redes_atualizadas == None:
@@ -336,7 +341,7 @@ def start(genomas, redes_atualizadas):
                         birds_reserva.append(bird)
                         birds.pop(i)
                         
-                        list_genomas[i].fitness -=1
+                        list_genomas[i].fitness -=5
                         list_genomas_reserva.append(genomas[i].fitness)
                         list_genomas.pop(i)
                         
@@ -372,7 +377,7 @@ def start(genomas, redes_atualizadas):
 
         
         for i, bird in enumerate(birds):
-            if (bird.pos_y + bird.img.get_height()) > 730 or bird.pos_y < 0:
+            if (bird.pos_y + bird.img.get_height()) > 500 or bird.pos_y < 0:
                 birds.pop(i)
                 if ia_jogando:
                     list_genomas.pop(i)
@@ -390,9 +395,18 @@ def start(genomas, redes_atualizadas):
             if len(list_genomas_reserva) > 0 and len(redes_reserva) > 0:
                 
                 
+                geracao_consecutiva +=1
+                if len(melhores_redes) >4:
+                    melhores_redes.clear()
+                
                 melhor = ag.selecao(list_genomas_reserva)
-                if redes_reserva != None:
-                    rede_nova = ag.mutacao(redes_reserva[melhor], 0.5) 
+                rede_nova = ag.mutacao(redes_reserva[melhor], 0.5, geracao_consecutiva, melhores_redes) 
+                melhores_redes.append(rede_nova)
+                print("melhores redes - ", melhores_redes)
+
+                if geracao_consecutiva == 7:
+                    geracao_consecutiva = 0
+            
                 #ag.evolui(indice_melhor, birds_reserva, list_genomas_reserva, redes_reserva)
                 #birds_reserva.clear()
                 #list_genomas_reserva.clear()
