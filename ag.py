@@ -42,17 +42,16 @@ def mutacao(rede, tx_mut, melhores_redes):
             }
         bias = []
         for b in rede[0]:
-            
             b = b * tx_mut
             bias.append(b)
 
         
-        pesos['A'][0] = rede[1]['A'][0] - ((rede[1]['A'][0] + (rede[1]['A'][0] * 0.15)) * (tx_mut * random.random()) - random.uniform(-1,1))
-        pesos['A'][1] = rede[1]['A'][1] - ((rede[1]['A'][1] + (rede[1]['A'][1] * 0.15)) * (tx_mut * random.random()) - random.uniform(-1,1))
-        pesos['B'][0] = rede[1]['B'][0] - ((rede[1]['B'][0] + (rede[1]['B'][0] * 0.15)) * (tx_mut * random.random()) - random.uniform(-1,1))
-        pesos['B'][1] = rede[1]['B'][1] - ((rede[1]['B'][1] + (rede[1]['B'][1] * 0.15)) * (tx_mut * random.random()) - random.uniform(-1,1))
-        pesos['C'][0] = rede[1]['C'][0] - ((rede[1]['C'][0] + (rede[1]['C'][0] * 0.15)) * (tx_mut * random.random()) - random.uniform(-1,1))
-        pesos['C'][1] = rede[1]['C'][1] - ((rede[1]['C'][1] + (rede[1]['C'][1] * 0.15)) * (tx_mut * random.random()) - random.uniform(-1,1))
+        pesos['A'][0] = rede[1]['A'][0] - ((rede[1]['A'][0] + (rede[1]['A'][0] * 0.25)) * (tx_mut * random.uniform(-2,2))) * random.uniform(-2,2)
+        pesos['A'][1] = rede[1]['A'][1] - ((rede[1]['A'][1] + (rede[1]['A'][1] * 0.25)) * (tx_mut * random.uniform(-2,2))) * random.uniform(-2,2)
+        pesos['B'][0] = rede[1]['B'][0] - ((rede[1]['B'][0] + (rede[1]['B'][0] * 0.25)) * (tx_mut * random.uniform(-2,2))) * random.uniform(-2,2)
+        pesos['B'][1] = rede[1]['B'][1] - ((rede[1]['B'][1] + (rede[1]['B'][1] * 0.25)) * (tx_mut * random.uniform(-2,2))) * random.uniform(-2,2)
+        pesos['C'][0] = rede[1]['C'][0] - ((rede[1]['C'][0] + (rede[1]['C'][0] * 0.25)) * (tx_mut * random.uniform(-2,2))) * random.uniform(-2,2)
+        pesos['C'][1] = rede[1]['C'][1] - ((rede[1]['C'][1] + (rede[1]['C'][1] * 0.25)) * (tx_mut * random.uniform(-2,2))) * random.uniform(-2,2)
 
         print("sofreu mutação")
         return bias, pesos    
