@@ -338,18 +338,18 @@ def start(genomas, redes_atualizadas):
         for pipe in pipes:
             for i, bird in enumerate(birds):
                 #verifica colisores passaro e cano
-                #if pipe.colider(bird):
-                #    if ia_jogando:
-                #        birds.pop(i)
-                #        
-                #        list_genomas[i].fitness -=1
-                #        list_genomas_reserva.append(list_genomas[i].fitness)
-                #        list_genomas.pop(i)
-                #        
-                #        redes_reserva.append(redes[i])
-                #        redes.pop(i)
-                #    else:
-                #        birds.pop(i)
+                if pipe.colider(bird):
+                    if ia_jogando:
+                        birds.pop(i)
+                        
+                        list_genomas[i].fitness -=1
+                        list_genomas_reserva.append(list_genomas[i].fitness)
+                        list_genomas.pop(i)
+                        
+                        redes_reserva.append(redes[i])
+                        redes.pop(i)
+                    else:
+                        birds.pop(i)
                     
                 #verifica se o passaro ja passou do cano
                 if not pipe.passou and (bird.pos_x > pipe.pos_x):
@@ -364,16 +364,16 @@ def start(genomas, redes_atualizadas):
             if desce: 
                 contador_desce +=1
 
-                pipe.pos_base +=1.5
-                pipe.pos_top +=1.5
+                pipe.pos_base +=1
+                pipe.pos_top +=1
                 if contador_desce == 200:
                     contador_desce = 0
                     desce = False
             else:
                 contador_desce +=1
 
-                pipe.pos_base -=1.5
-                pipe.pos_top -=1.5
+                pipe.pos_base -=1
+                pipe.pos_top -=1
                 if contador_desce == 200:
                     contador_desce = 0
                     desce = True
