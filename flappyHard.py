@@ -3,7 +3,6 @@ import os
 import random
 import rede_neural
 import ag
-import time
 
 
 ia_jogando = True
@@ -51,7 +50,7 @@ class Bird:
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.dashe = False
-        self.dash_duracao = 30
+        self.dash_duracao = 40
         self.angulo = 0
         self.velociade = 0
         self.altura = self.pos_y
@@ -326,6 +325,7 @@ def start(genomas, redes_atualizadas):
         global redes_reserva
         global melhores_redes
         global geracao_consecutiva
+        x = 40
         for genoma in genomas:
             #rede = neat.nn.FeedForwardNetwork.create(genoma, config)
             if redes_atualizadas == None:
@@ -336,7 +336,8 @@ def start(genomas, redes_atualizadas):
             rede = None
             genoma.fitness = 0 
             list_genomas.append(genoma)
-            birds.append(Bird(100, 350))
+            birds.append(Bird(x, 350))
+            x +=2
                 
         for rede in redes:
             #print(rede[1])
