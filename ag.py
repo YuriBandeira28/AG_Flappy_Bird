@@ -32,30 +32,29 @@ def selecao(genomas):
     return melhor
 
 
-def mutacao(rede, tx_mut, melhores_redes):
+def mutacao(rede, tx_mut, ):
 
-    if melhores_redes != []:
-        pesos = {
-            'A': [None, None],
-            'B': [None, None],
-            'C': [None, None]
-            }
-        bias = []
-        for b in rede[0]:
-            b = b * tx_mut
-            bias.append(b)
-
-        
-        pesos['A'][0] = rede[1]['A'][0] - ((rede[1]['A'][0] + (rede[1]['A'][0] * 0.25)) * (tx_mut * random.uniform(-2,2))) * random.uniform(-2,2)
-        pesos['A'][1] = rede[1]['A'][1] - ((rede[1]['A'][1] + (rede[1]['A'][1] * 0.25)) * (tx_mut * random.uniform(-2,2))) * random.uniform(-2,2)
-        pesos['B'][0] = rede[1]['B'][0] - ((rede[1]['B'][0] + (rede[1]['B'][0] * 0.25)) * (tx_mut * random.uniform(-2,2))) * random.uniform(-2,2)
-        pesos['B'][1] = rede[1]['B'][1] - ((rede[1]['B'][1] + (rede[1]['B'][1] * 0.25)) * (tx_mut * random.uniform(-2,2))) * random.uniform(-2,2)
-        pesos['C'][0] = rede[1]['C'][0] - ((rede[1]['C'][0] + (rede[1]['C'][0] * 0.25)) * (tx_mut * random.uniform(-2,2))) * random.uniform(-2,2)
-        pesos['C'][1] = rede[1]['C'][1] - ((rede[1]['C'][1] + (rede[1]['C'][1] * 0.25)) * (tx_mut * random.uniform(-2,2))) * random.uniform(-2,2)
-
-        print("sofreu mutação")
-        return bias, pesos    
     
+    pesos = {
+        'A': [None, None],
+        'B': [None, None],
+        'C': [None, None]
+        }
+    bias = []
+    for b in rede[0]:
+        b = b * tx_mut
+        bias.append(b)
+
+    pesos['A'][0] = rede[1]['A'][0] + ((rede[1]['A'][0] * tx_mut) + random.random())
+    pesos['A'][1] = rede[1]['A'][1] + ((rede[1]['A'][1] * tx_mut) + random.random())
+    pesos['B'][0] = rede[1]['B'][0] + ((rede[1]['B'][0] * tx_mut) + random.random())
+    pesos['B'][1] = rede[1]['B'][1] + ((rede[1]['B'][1] * tx_mut) + random.random())
+    pesos['C'][0] = rede[1]['C'][0] + ((rede[1]['C'][0] * tx_mut) + random.random())
+    pesos['C'][1] = rede[1]['C'][1] + ((rede[1]['C'][1] * tx_mut) + random.random())
+
+    print("sofreu mutação")
+    return bias, pesos    
+
     
         
         

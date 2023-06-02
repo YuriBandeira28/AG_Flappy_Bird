@@ -42,6 +42,8 @@ class Bird:
     rotacao_max = 25
     velocidade_rotacao = 20
     temp_animacao = 5
+    recarga_dash = 250
+    dash_disponivel = False
 
     #atributos para o pássaro
 
@@ -133,6 +135,7 @@ class Bird:
     def get_mask(self):
         #define uma máscara para o pássaro (melhorando o sistema de colisão)
         return pygame.mask.from_surface(self.img)
+    
 class PipePequeno:
     
     dist = 60 #de um cano para o outro
@@ -150,7 +153,7 @@ class PipePequeno:
         self.define_altura()
 
     def define_altura(self):
-        self.altura = random.randrange(20, 300)
+        self.altura = random.randrange(40, 400)
         self.pos_top  = self.altura - self.img_top.get_height()
         self.pos_base = self.altura + self.dist
 
@@ -179,6 +182,7 @@ class PipePequeno:
             return True
         else:
             return False
+        
 class Pipe:
     
     dist = 120 #de um cano para o outro
@@ -317,6 +321,7 @@ def start(genomas, redes_atualizadas):
         redes = []
         list_genomas = []
         birds = []
+        tx_mut = 0.03
         global list_genomas_reserva
         global redes_reserva
         global melhores_redes
@@ -326,7 +331,7 @@ def start(genomas, redes_atualizadas):
             if redes_atualizadas == None:
                 rede = rede_neural.rede_neural()
             else:
-                rede = redes_atualizadas
+                rede = ag.mutacao(redes_atualizadas, tx_mut)
             redes.append(rede)
             rede = None
             genoma.fitness = 0 
@@ -349,17 +354,17 @@ def start(genomas, redes_atualizadas):
     desce = True
     contador_desce = 0
     contador_cano = 0
-    recarga_dash = 250
-    dash_disponivel = True
+    
 
     while rodando:
+        
+        for bird in birds:
+            if not bird.dash_disponivel:
+                bird.recarga_dash -=1
 
-        if not dash_disponivel:
-            recarga_dash -=1
-
-        if recarga_dash == 0:
-            dash_disponivel = True
-            recarga_dash = 250
+            if bird.recarga_dash == 0:
+                bird.dash_disponivel = True
+                bird.recarga_dash = 250
 
         relogio.tick(30)
         #fechar a janela
@@ -376,9 +381,9 @@ def start(genomas, redes_atualizadas):
                         bird.jump()
                 if event.key == pygame.K_z:
                     for bird in birds:
-                        if dash_disponivel:
+                        if bird.dash_disponivel:
                             bird.dash()
-                            dash_disponivel = False
+                            bird.dash_disponivel = False
 
         indice_pipe = 0
         if len(birds) > 0:
@@ -402,12 +407,12 @@ def start(genomas, redes_atualizadas):
                                                      dist_y=abs(bird.pos_y - pipes[indice_pipe].pos_base),
                                                      bias=redes[i][0],
                                                      pesos=redes[i][1])
-            if output > 0.5:
+            if output > 0.6:
                 bird.jump()
-            else:
-                if dash_disponivel:
+            elif output >0.3 and output <=0.6:
+                if bird.dash_disponivel:
                     bird.dash()
-                    dash_disponivel = False
+                    bird.dash_disponivel = False
             
         #movimentação do chão
         base.move()
@@ -501,16 +506,18 @@ def start(genomas, redes_atualizadas):
                 pass
             if len(list_genomas_reserva) > 0 and len(redes_reserva) > 0:
                 
-                if len(melhores_redes) >4:
-                    melhores_redes_aux = melhores_redes[len(melhores_redes) -1]
-                    melhores_redes.clear()
-                    melhores_redes.append(melhores_redes_aux)
+                #if len(melhores_redes) >4:
+                #    melhores_redes_aux = melhores_redes[len(melhores_redes) -1]
+                #    melhores_redes.clear()
+                #    melhores_redes.append(melhores_redes_aux)
                 
                 melhor = ag.selecao(list_genomas_reserva)
-                tx_mut = 0.5
-                #if random.random() < tx_mut:  
-                rede_nova = ag.mutacao(redes_reserva[melhor], tx_mut, melhores_redes) 
-                melhores_redes.append(rede_nova)
+                
+                #if random.random() < tx_mut:    
+                rede_nova = redes_reserva[melhor]
+                
+
+                #melhores_redes.append(rede_nova)
             
                 #list_genomas_reserva.clear()
                 #redes_reserva.clear()
