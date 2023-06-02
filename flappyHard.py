@@ -3,7 +3,6 @@ import os
 import random
 import rede_neural
 import ag
-import time
 
 
 ia_jogando = True
