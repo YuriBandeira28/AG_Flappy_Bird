@@ -375,17 +375,17 @@ def start(genomas, redes_atualizadas):
                 pygame.quit()
                 quit()
             #pulo do pássaro
-            #if not ia_jogando:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    for bird in birds:
-                        bird.jump()
-                if event.key == pygame.K_z:
-                    for bird in birds:
-                        if bird.dash_disponivel:
-                            bird.dash()
-                            bird.dash_disponivel = False
-
+            if not ia_jogando:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        for bird in birds:
+                            bird.jump()
+                    if event.key == pygame.K_z:
+                        for bird in birds:
+                            if bird.dash_disponivel:
+                                bird.dash()
+                                bird.dash_disponivel = False
+    
         indice_pipe = 0
         if len(birds) > 0:
             for bird in birds:
@@ -517,6 +517,8 @@ def start(genomas, redes_atualizadas):
                 #if random.random() < tx_mut:    
                 rede_nova = redes_reserva[melhor]
                 
+                with open("melhor_rede.txt", "w") as mr:
+                    mr.write(str(rede_nova))
 
                 #melhores_redes.append(rede_nova)
             

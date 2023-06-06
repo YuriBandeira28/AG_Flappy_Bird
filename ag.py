@@ -42,7 +42,7 @@ def mutacao(rede, tx_mut, ):
         }
     bias = []
     for b in rede[0]:
-        b = b * tx_mut
+       #b = b * tx_mut
         bias.append(b)
 
     pesos['A'][0] = rede[1]['A'][0] + ((rede[1]['A'][0] * tx_mut) * random.uniform(-1,1))#rede[1]['A'][0] + ((rede[1]['A'][0] * tx_mut) + random.random())
