@@ -505,17 +505,18 @@ def start(genomas, redes_atualizadas):
             for i, rede in enumerate(redes_reserva):
                 #print(f"rede {i} - ",redes_reserva[i][1])
                 pass
-            if len(list_genomas_reserva) > 0 and len(redes_reserva) > 0:
+            if len(list_genomas_reserva) > 1 and len(redes_reserva) > 1:
                 
                 #if len(melhores_redes) >4:
                 #    melhores_redes_aux = melhores_redes[len(melhores_redes) -1]
                 #    melhores_redes.clear()
                 #    melhores_redes.append(melhores_redes_aux)
                 
-                melhor = ag.selecao(list_genomas_reserva)
-                
+                pai1, pai2 = ag.selecao(list_genomas_reserva)
+
+                rede_nova = ag.cruzamento(redes_reserva[pai1], redes_reserva[pai2])
+
                 #if random.random() < tx_mut:    
-                rede_nova = redes_reserva[melhor]
                 
                 with open("melhor_rede.txt", "w") as mr:
                     mr.write(str(rede_nova))
