@@ -320,7 +320,7 @@ def start(genomas, redes_atualizadas):
         redes = []
         list_genomas = []
         birds = []
-        tx_mut = 0.03
+        tx_mut = 0.02
         global list_genomas_reserva
         global redes_reserva
         global melhores_redes
