@@ -6,20 +6,6 @@ def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
 
-class Genoma():
-    
-    fitness = 0
-
-    def __init__(self):
-        pass
-        
-    def start_população(tamanho):
-        genomas = []
-        for i in range(tamanho):
-            genomas.append(Genoma())
-            
-        return genomas
-
 def rede_neural(pesos = None):
     
     bias = [random.uniform(-1.2,1.2), random.uniform(-1.2,1.2), random.uniform(-1.2,1.2)]
@@ -31,11 +17,7 @@ def rede_neural(pesos = None):
             'B': [random.uniform(-1.2,1.2), random.uniform(-1.2,1.2)],
             'C': [random.uniform(-1.2,1.2), random.uniform(-1.2,1.2)]
         }
-        #pesos = {
-        #'A': [random.uniform(0, 1), random.uniform(0, 1)],
-        #'B': [random.uniform(0, 1), random.uniform(0, 1)],
-        #'C': [random.uniform(0, 1), random.uniform(0, 1)]
-        #}
+
        
     else:
         pesos = pesos

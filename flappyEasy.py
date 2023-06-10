@@ -256,6 +256,8 @@ def start(genomas, redes_atualizadas):
         redes = [] 
         list_genomas = []
         birds = []
+        tx_mut = 0.03
+
         global list_genomas_reserva
 
         global redes_reserva
@@ -266,7 +268,7 @@ def start(genomas, redes_atualizadas):
             if redes_atualizadas == None:
                 rede = rede_neural.rede_neural()
             else:
-                rede = redes_atualizadas
+                rede = ag.mutacao(redes_atualizadas, tx_mut)
             redes.append(rede)
             rede = None
             genoma.fitness = 0 
@@ -391,17 +393,17 @@ def start(genomas, redes_atualizadas):
                 
                 
                
-                if len(melhores_redes) >4:
-                    melhores_redes_aux = melhores_redes[len(melhores_redes) -1]
-                    melhores_redes.clear()
-                    melhores_redes.append(melhores_redes_aux)
+                #if len(melhores_redes) >4:
+                #    melhores_redes_aux = melhores_redes[len(melhores_redes) -1]
+                #    melhores_redes.clear()
+                #    melhores_redes.append(melhores_redes_aux)
                 
-                melhor = ag.selecao(list_genomas_reserva)
-                tx_mut = 0.5
-                #if random.random() < tx_mut:  
-                rede_nova = ag.mutacao(redes_reserva[melhor], tx_mut, melhores_redes) 
-                melhores_redes.append(rede_nova)
+                pai1, pai2 = ag.selecao(list_genomas_reserva)
+
+                rede_nova = ag.cruzamento(redes_reserva[pai1], redes_reserva[pai2])
             
+                with open("melhor_rede.txt", "w") as mr:
+                    mr.write(str(rede_nova))
                 #list_genomas_reserva.clear()
                 #redes_reserva.clear()
                 
@@ -415,7 +417,7 @@ def rodar(rede):
 
     
     if ia_jogando:
-        populacao = rede_neural.Genoma.start_população(30)
+        populacao = ag.Genoma.start_população(30)
         start(genomas=populacao, redes_atualizadas = rede)
     else:
         start(None, None)

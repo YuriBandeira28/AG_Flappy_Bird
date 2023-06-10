@@ -320,7 +320,7 @@ def start(genomas, redes_atualizadas):
         redes = []
         list_genomas = []
         birds = []
-        tx_mut = 0.02
+        tx_mut = 0.03
         global list_genomas_reserva
         global redes_reserva
         global melhores_redes
@@ -332,6 +332,7 @@ def start(genomas, redes_atualizadas):
                 rede = rede_neural.rede_neural()
             else:
                 rede = ag.mutacao(redes_atualizadas, tx_mut)
+
             redes.append(rede)
             rede = None
             genoma.fitness = 0 
@@ -403,14 +404,13 @@ def start(genomas, redes_atualizadas):
 
             list_genomas[i].fitness +=0.1
 
-            #output = redes[i].activate((bird.pos_y, abs(bird.pos_y - pipes[indice_pipe].altura), abs(bird.pos_y - pipes[indice_pipe].pos_base)))
             output = rede_neural.calcula_ativacao(dist_x=(bird.pos_y - pipes[indice_pipe].altura), 
                                                      dist_y=abs(bird.pos_y - pipes[indice_pipe].pos_base),
                                                      bias=redes[i][0],
                                                      pesos=redes[i][1])
-            if output > 0.6:
+            if output > 0.66:
                 bird.jump()
-            elif output >0.3 and output <=0.6:
+            elif output >0.33 and output <=0.66:
                 if bird.dash_disponivel:
                     bird.dash()
                     bird.dash_disponivel = False
@@ -535,7 +535,7 @@ def rodar(rede):
 
     
     if ia_jogando:
-        populacao = rede_neural.Genoma.start_população(30)
+        populacao = ag.Genoma.start_população(30)
         start(genomas=populacao, redes_atualizadas = rede)
     else:
         start(None, None)
