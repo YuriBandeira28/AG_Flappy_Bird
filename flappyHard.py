@@ -408,6 +408,7 @@ def start(genomas, redes_atualizadas):
                                                      dist_y=abs(bird.pos_y - pipes[indice_pipe].pos_base),
                                                      bias=redes[i][0],
                                                      pesos=redes[i][1])
+
             if output > 0.66:
                 bird.jump()
             elif output >0.33 and output <=0.66:
@@ -535,7 +536,7 @@ def rodar(rede):
 
     
     if ia_jogando:
-        populacao = ag.Genoma.start_população(30)
+        populacao = ag.Genoma.start_população(50)
         start(genomas=populacao, redes_atualizadas = rede)
     else:
         start(None, None)

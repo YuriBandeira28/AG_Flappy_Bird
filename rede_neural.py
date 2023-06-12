@@ -44,8 +44,8 @@ def calcula_ativacao(dist_x, dist_y, bias, pesos):
 
     ativacaoC = bias[2] + pesos['C'][0] * saidaA + pesos['C'][1] * saidaB
 
-    # saidaC = sigmoid(ativaçãoC)
-    return ativacaoC
+    saidaC = sigmoid(ativacaoC)
+    return saidaC
 
 
 

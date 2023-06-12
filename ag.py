@@ -37,7 +37,7 @@ def selecao(genomas):
     global melhoresPai1
     global melhoresPai2
 
-    pai2 = genomas.index(genomas[-1])
+    #pai2 = genomas.index(genomas[-1])
     genomas = sorted(genomas, reverse=True)
 
     # seleciona o melhor pai
@@ -51,14 +51,14 @@ def selecao(genomas):
 
     # seleciona o 2º melhor pai
     
-    #melhorPai2 = genomas[1]
-    #melhoresPai2[0] = melhorPai2
-    #if  melhoresPai1[0] >= melhoresPai2[1]:
-    #    pai2 =  genomas.index(melhoresPai2[0])
-    #    melhoresPai2[1] = melhoresPai2[0]
-    #else:
-    #    pai2 = genomas.index(melhoresPai2[1])
-        
+    melhorPai2 = genomas[1]
+    melhoresPai2[0] = melhorPai2
+    if  melhoresPai1[0] >= melhoresPai2[1]:
+        pai2 =  genomas.index(melhoresPai2[0])
+        melhoresPai2[1] = melhoresPai2[0]
+    else:
+        pai2 = genomas.index(melhoresPai2[1])
+       
     #pai2 = random.randint(0, len(genomas) - 1)
     
     return pai1, pai2
