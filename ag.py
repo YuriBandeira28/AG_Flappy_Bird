@@ -53,7 +53,7 @@ def selecao(genomas):
     
     melhorPai2 = genomas[1]
     melhoresPai2[0] = melhorPai2
-    if  melhoresPai1[0] >= melhoresPai2[1]:
+    if  melhoresPai2[0] >= melhoresPai2[1]:
         pai2 =  genomas.index(melhoresPai2[0])
         melhoresPai2[1] = melhoresPai2[0]
     else:
