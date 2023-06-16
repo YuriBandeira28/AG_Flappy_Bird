@@ -39,15 +39,15 @@ def selecao(genomas):
 
     # seleciona o 2º melhor pai
     
-    melhorPai2 = genomas[1]
-    melhoresPai2[0] = melhorPai2
-    if  melhoresPai2[0] >= melhoresPai2[1]:
-        pai2 =  genomas.index(melhoresPai2[0])
-        melhoresPai2[1] = melhoresPai2[0]
-    else:
-        pai2 = genomas.index(melhoresPai2[1])
+    #melhorPai2 = genomas[1]
+    #melhoresPai2[0] = melhorPai2
+    #if  melhoresPai2[0] >= melhoresPai2[1]:
+    #    pai2 =  genomas.index(melhoresPai2[0])
+    #    melhoresPai2[1] = melhoresPai2[0]
+    #else:
+    #    pai2 = genomas.index(melhoresPai2[1])
        
-    #pai2 = random.randint(0, len(genomas) - 1)
+    pai2 = random.randint(0, len(genomas) - 1)
     
     return pai1, pai2
 
@@ -110,9 +110,8 @@ def mutacao(rede, tx_mut):
         }
     bias = []
     for b in rede[0]:
-       #b = b * tx_mut
+        b = (b + (b * tx_mut)) * random.choice([-1,1])
         bias.append(b)
-
 
 
     #pesos['A'][0] = rede[1]['A'][0] + ((rede[1]['A'][0] * tx_mut) * random.uniform(-1,1))
@@ -122,29 +121,22 @@ def mutacao(rede, tx_mut):
     #pesos['C'][0] = rede[1]['C'][0] + ((rede[1]['C'][0] * tx_mut) * random.uniform(-1,1))
     #pesos['C'][1] = rede[1]['C'][1] + ((rede[1]['C'][1] * tx_mut) * random.uniform(-1,1))
 
-    pesos['A'][0] = (rede[1]['A'][0] + ((rede[1]['A'][0] * tx_mut) * random.uniform(0, 2))) * random.choice([-1,1])#rede[1]['A'][0] + ((rede[1]['A'][0] * tx_mut) + random.random())
-    pesos['A'][1] = (rede[1]['A'][1] + ((rede[1]['A'][1] * tx_mut) * random.uniform(0, 2))) * random.choice([-1,1])#rede[1]['A'][1] + ((rede[1]['A'][1] * tx_mut) + random.random())
-    
-    pesos['B'][0] = (rede[1]['B'][0] + ((rede[1]['B'][0] * tx_mut) * random.uniform(0, 2))) * random.choice([-1,1])#rede[1]['B'][0] + ((rede[1]['B'][0] * tx_mut) + random.random())
-    pesos['B'][1] = (rede[1]['B'][1] + ((rede[1]['B'][1] * tx_mut) * random.uniform(0, 2))) * random.choice([-1,1])#rede[1]['B'][1] + ((rede[1]['B'][1] * tx_mut) + random.random())
-
-    pesos['C'][0] = (rede[1]['C'][0] + ((rede[1]['C'][0] * tx_mut) * random.uniform(0, 2))) * random.choice([-1,1])#rede[1]['C'][0] + ((rede[1]['C'][0] * tx_mut) + random.random())
-    pesos['C'][1] = (rede[1]['C'][1] + ((rede[1]['C'][1] * tx_mut) * random.uniform(0, 2))) * random.choice([-1,1])#rede[1]['C'][1] + ((rede[1]['C'][1] * tx_mut) + random.random())
-
-    pesos['D'][0] = (rede[1]['D'][0] + ((rede[1]['D'][0] * tx_mut) * random.uniform(0, 2))) * random.choice([-1,1])#rede[1]['A'][0] + ((rede[1]['A'][0] * tx_mut) + random.random())
-    pesos['D'][1] = (rede[1]['D'][1] + ((rede[1]['D'][1] * tx_mut) * random.uniform(0, 2))) * random.choice([-1,1])#rede[1]['A'][1] + ((rede[1]['A'][1] * tx_mut) + random.random())
-
-    pesos['E'][0] = (rede[1]['E'][0] + ((rede[1]['E'][0] * tx_mut) * random.uniform(0, 2))) * random.choice([-1,1])#rede[1]['B'][0] + ((rede[1]['B'][0] * tx_mut) + random.random())
-    pesos['E'][1] = (rede[1]['E'][1] + ((rede[1]['E'][1] * tx_mut) * random.uniform(0, 2))) * random.choice([-1,1])#rede[1]['B'][1] + ((rede[1]['B'][1] * tx_mut) + random.random())
-
-    pesos['F'][0] = (rede[1]['F'][0] + ((rede[1]['F'][0] * tx_mut) * random.uniform(0, 2))) * random.choice([-1,1])#rede[1]['C'][0] + ((rede[1]['C'][0] * tx_mut) + random.random())
-    pesos['F'][1] = (rede[1]['F'][1] + ((rede[1]['F'][1] * tx_mut) * random.uniform(0, 2))) * random.choice([-1,1])#rede[1]['C'][1] + ((rede[1]['C'][1] * tx_mut) + random.random())
-    pesos['F'][2] = (rede[1]['F'][2] + ((rede[1]['F'][2] * tx_mut) * random.uniform(0, 2))) * random.choice([-1,1])#rede[1]['A'][0] + ((rede[1]['A'][0] * tx_mut) + random.random())
-
-    pesos['G'][0] = (rede[1]['G'][0] + ((rede[1]['G'][0] * tx_mut) * random.uniform(0, 2))) * random.choice([-1,1])#rede[1]['A'][1] + ((rede[1]['A'][1] * tx_mut) + random.random())
-    pesos['G'][1] = (rede[1]['G'][1] + ((rede[1]['G'][1] * tx_mut) * random.uniform(0, 2))) * random.choice([-1,1])#rede[1]['B'][0] + ((rede[1]['B'][0] * tx_mut) + random.random())
-    pesos['G'][2] = (rede[1]['G'][2] + ((rede[1]['G'][2] * tx_mut) * random.uniform(0, 2))) * random.choice([-1,1])#rede[1]['B'][1] + ((rede[1]['B'][1] * tx_mut) + random.random())
-
+    pesos['A'][0] = (rede[1]['A'][0] + (((rede[1]['A'][0] * tx_mut) * random.choice([-1,1])) * random.uniform(-1, 1))) * random.choice([-1,1])#rede[1]['A'][0] + ((rede[1]['A'][0] * tx_mut) + random.random())
+    pesos['A'][1] = (rede[1]['A'][1] + (((rede[1]['A'][1] * tx_mut) * random.choice([-1,1])) * random.uniform(-1, 1))) * random.choice([-1,1])#rede[1]['A'][1] + ((rede[1]['A'][1] * tx_mut) + random.random())
+    pesos['B'][0] = (rede[1]['B'][0] + (((rede[1]['B'][0] * tx_mut) * random.choice([-1,1])) * random.uniform(-1, 1))) * random.choice([-1,1])#rede[1]['B'][0] + ((rede[1]['B'][0] * tx_mut) + random.random())
+    pesos['B'][1] = (rede[1]['B'][1] + (((rede[1]['B'][1] * tx_mut) * random.choice([-1,1])) * random.uniform(-1, 1))) * random.choice([-1,1])#rede[1]['B'][1] + ((rede[1]['B'][1] * tx_mut) + random.random())
+    pesos['C'][0] = (rede[1]['C'][0] + (((rede[1]['C'][0] * tx_mut) * random.choice([-1,1])) * random.uniform(-1, 1))) * random.choice([-1,1])#rede[1]['C'][0] + ((rede[1]['C'][0] * tx_mut) + random.random())
+    pesos['C'][1] = (rede[1]['C'][1] + (((rede[1]['C'][1] * tx_mut) * random.choice([-1,1])) * random.uniform(-1, 1))) * random.choice([-1,1])#rede[1]['C'][1] + ((rede[1]['C'][1] * tx_mut) + random.random())
+    pesos['D'][0] = (rede[1]['D'][0] + (((rede[1]['D'][0] * tx_mut) * random.choice([-1,1])) * random.uniform(-1, 1))) * random.choice([-1,1])#rede[1]['A'][0] + ((rede[1]['A'][0] * tx_mut) + random.random())
+    pesos['D'][1] = (rede[1]['D'][1] + (((rede[1]['D'][1] * tx_mut) * random.choice([-1,1])) * random.uniform(-1, 1))) * random.choice([-1,1])#rede[1]['A'][1] + ((rede[1]['A'][1] * tx_mut) + random.random())
+    pesos['E'][0] = (rede[1]['E'][0] + (((rede[1]['E'][0] * tx_mut) * random.choice([-1,1])) * random.uniform(-1, 1))) * random.choice([-1,1])#rede[1]['B'][0] + ((rede[1]['B'][0] * tx_mut) + random.random())
+    pesos['E'][1] = (rede[1]['E'][1] + (((rede[1]['E'][1] * tx_mut) * random.choice([-1,1])) * random.uniform(-1, 1))) * random.choice([-1,1])#rede[1]['B'][1] + ((rede[1]['B'][1] * tx_mut) + random.random())
+    pesos['F'][0] = (rede[1]['F'][0] + (((rede[1]['F'][0] * tx_mut) * random.choice([-1,1])) * random.uniform(-1, 1))) * random.choice([-1,1])#rede[1]['C'][0] + ((rede[1]['C'][0] * tx_mut) + random.random())
+    pesos['F'][1] = (rede[1]['F'][1] + (((rede[1]['F'][1] * tx_mut) * random.choice([-1,1])) * random.uniform(-1, 1))) * random.choice([-1,1])#rede[1]['C'][1] + ((rede[1]['C'][1] * tx_mut) + random.random())
+    pesos['F'][2] = (rede[1]['F'][2] + (((rede[1]['F'][2] * tx_mut) * random.choice([-1,1])) * random.uniform(-1, 1))) * random.choice([-1,1])#rede[1]['A'][0] + ((rede[1]['A'][0] * tx_mut) + random.random())
+    pesos['G'][0] = (rede[1]['G'][0] + (((rede[1]['G'][0] * tx_mut) * random.choice([-1,1])) * random.uniform(-1, 1))) * random.choice([-1,1])#rede[1]['A'][1] + ((rede[1]['A'][1] * tx_mut) + random.random())
+    pesos['G'][1] = (rede[1]['G'][1] + (((rede[1]['G'][1] * tx_mut) * random.choice([-1,1])) * random.uniform(-1, 1))) * random.choice([-1,1])#rede[1]['B'][0] + ((rede[1]['B'][0] * tx_mut) + random.random())
+    pesos['G'][2] = (rede[1]['G'][2] + (((rede[1]['G'][2] * tx_mut) * random.choice([-1,1])) * random.uniform(-1, 1))) * random.choice([-1,1])#rede[1]['B'][1] + ((rede[1]['B'][1] * tx_mut) + random.random())
 
     return bias, pesos    
 
