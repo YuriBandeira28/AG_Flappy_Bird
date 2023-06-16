@@ -404,14 +404,15 @@ def start(genomas, redes_atualizadas):
 
             list_genomas[i].fitness +=0.1
 
-            output = rede_neural.calcula_ativacao(dist_x=(bird.pos_y - pipes[indice_pipe].altura), 
+            output_pulo, output_dash = rede_neural.calcula_ativacao(dist_x=(bird.pos_y - pipes[indice_pipe].altura), 
                                                      dist_y=abs(bird.pos_y - pipes[indice_pipe].pos_base),
                                                      bias=redes[i][0],
                                                      pesos=redes[i][1])
 
-            if output > 0.66:
+            if output_pulo > 0.5:
                 bird.jump()
-            elif output >0.33 and output <=0.66:
+                
+            if output_dash >0.5:
                 if bird.dash_disponivel:
                     bird.dash()
                     bird.dash_disponivel = False
