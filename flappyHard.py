@@ -41,7 +41,7 @@ class Bird:
     rotacao_max = 25
     velocidade_rotacao = 20
     temp_animacao = 5
-    recarga_dash = 250
+    recarga_dash = 300
     dash_disponivel = False
 
     #atributos para o pássaro
@@ -320,12 +320,13 @@ def start(genomas, redes_atualizadas):
         redes = []
         list_genomas = []
         birds = []
-        tx_mut = 0.03
+        tx_mut = 0.01
         global list_genomas_reserva
         global redes_reserva
         global melhores_redes
         global geracao_consecutiva
-        x = 40
+        x = 20
+        y = 100
         for genoma in genomas:
             #rede = neat.nn.FeedForwardNetwork.create(genoma, config)
             if redes_atualizadas == None:
@@ -333,12 +334,14 @@ def start(genomas, redes_atualizadas):
             else:
                 rede = ag.mutacao(redes_atualizadas, tx_mut)
 
+            print("rede - ", rede)
             redes.append(rede)
             rede = None
             genoma.fitness = 0 
             list_genomas.append(genoma)
-            birds.append(Bird(x, 350))
-            x +=2
+            birds.append(Bird(x, y))
+            y+=3
+            x +=1
                 
         for rede in redes:
             #print(rede[1])
@@ -366,7 +369,7 @@ def start(genomas, redes_atualizadas):
 
             if bird.recarga_dash == 0:
                 bird.dash_disponivel = True
-                bird.recarga_dash = 250
+                bird.recarga_dash = 300
 
         relogio.tick(30)
         #fechar a janela
@@ -406,13 +409,14 @@ def start(genomas, redes_atualizadas):
 
             output_pulo, output_dash = rede_neural.calcula_ativacao(dist_x=(bird.pos_y - pipes[indice_pipe].altura), 
                                                      dist_y=abs(bird.pos_y - pipes[indice_pipe].pos_base),
+                                                     largura = pipes[indice_pipe].dist,
                                                      bias=redes[i][0],
                                                      pesos=redes[i][1])
 
-            if output_pulo > 0.5:
+            if output_pulo > 0:
                 bird.jump()
                 
-            if output_dash >0.5:
+            if output_dash >0:
                 if bird.dash_disponivel:
                     bird.dash()
                     bird.dash_disponivel = False
@@ -497,47 +501,28 @@ def start(genomas, redes_atualizadas):
                 if ia_jogando:
                     list_genomas.pop(i)
                     redes.pop(i)
-        
-        for i, bird in enumerate(birds):
-            #print("nuero de passaros -", len(birds))
-            #print(f"passaro {i} pontuou:", list_genomas[i].fitness) 
-            pass
         if birds == []:
             rede_nova = None
-            for i, rede in enumerate(redes_reserva):
-                #print(f"rede {i} - ",redes_reserva[i][1])
-                pass
             if len(list_genomas_reserva) > 1 and len(redes_reserva) > 1:
                 
-                #if len(melhores_redes) >4:
-                #    melhores_redes_aux = melhores_redes[len(melhores_redes) -1]
-                #    melhores_redes.clear()
-                #    melhores_redes.append(melhores_redes_aux)
                 
                 pai1, pai2 = ag.selecao(list_genomas_reserva)
 
                 rede_nova = ag.cruzamento(redes_reserva[pai1], redes_reserva[pai2])
 
-                #if random.random() < tx_mut:    
                 
                 with open("melhor_rede.txt", "w") as mr:
                     mr.write(str(rede_nova))
 
-                #melhores_redes.append(rede_nova)
-            
-                #list_genomas_reserva.clear()
-                #redes_reserva.clear()
-                
-            rodar(rede_nova)  
+            rodar(rede_nova)
         desenhar_tela(tela, birds, pipes, base, pontos)
             
         
 
 def rodar(rede):
-
     
     if ia_jogando:
-        populacao = ag.Genoma.start_população(50)
+        populacao = ag.Genoma.start_população(70)
         start(genomas=populacao, redes_atualizadas = rede)
     else:
         start(None, None)
