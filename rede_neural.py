@@ -40,9 +40,11 @@ def calcula_ativacao(dist_x, dist_y, bias, pesos):
     ativacaoA= pesos['A'][0] * dist_x + pesos['A'][1] * dist_y + bias[0]
     ativacaoB = pesos['B'][0] *dist_x + pesos['B'][1] * dist_y + bias[1]
 
-    saidaA = sigmoid(ativacaoA)
-    saidaB = sigmoid(ativacaoB)
+    #saidaA = sigmoid(ativacaoA)
+    #saidaB = sigmoid(ativacaoB)
 
+    saidaA = np.tanh(ativacaoA)
+    saidaB = np.tanh(ativacaoB)
     #neuronios intermediários
     ativacaoC = pesos['C'][0] * saidaA + pesos['C'][1] *saidaB + bias[2]
     ativacaoD = pesos['D'][0] * saidaA + pesos['D'][1] *saidaB + bias[3]
@@ -52,13 +54,20 @@ def calcula_ativacao(dist_x, dist_y, bias, pesos):
     saidaD = sigmoid(ativacaoD)
     saidaE = sigmoid(ativacaoE)
 
+    saidaC = np.tanh(ativacaoC)
+    saidaD = np.tanh(ativacaoD)
+    saidaE = np.tanh(ativacaoE)
+
     #neuronios de saída
     ativacaoF = pesos['F'][0] * saidaC + pesos['F'][1] *saidaD + saidaE * pesos['F'][2] + bias[5]
     ativacaoG = pesos['G'][0] * saidaC + pesos['G'][1] *saidaD + saidaE * pesos['G'][2] + bias[6]
     
-    saidaF = sigmoid(ativacaoF)    
-    saidaG = sigmoid(ativacaoG)
-    
+    #saidaF = sigmoid(ativacaoF)    
+    #saidaG = sigmoid(ativacaoG)
+
+    saidaF = np.tanh(ativacaoF)
+    saidaG = np.tanh(ativacaoG)
+
     #saída
     return saidaF, saidaG
 
