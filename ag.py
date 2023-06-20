@@ -1,7 +1,6 @@
 import random
 import numpy
 
-
 class Genoma():
     
     fitness = 0
@@ -15,43 +14,26 @@ class Genoma():
             genomas.append(Genoma())
             
         return genomas
-    
-                  
-melhoresPai1 = [0,0]
-melhoresPai2 = [0,0]
-
+                 
+melhores = [0,0]
 def selecao(genomas):
 
-    global melhoresPai1
-    global melhoresPai2
-
-    #pai2 = genomas.index(genomas[-1])
-    genomas = sorted(genomas, reverse=True)
-
-    # seleciona o melhor pai
-    melhorPai1 = genomas[0]
-    melhoresPai1[0] = melhorPai1
-    if  melhoresPai1[0] >= melhoresPai1[1]:
-        pai1 =  genomas.index(melhoresPai1[0])
-        melhoresPai1[1] = melhoresPai1[0]
+    global melhores
+    genomas = sorted(genomas)
+    melhor1 = max(genomas)
+    melhores[0] = melhor1
+    
+    if  melhores[0] >= melhores[1]:
+        melhor =  genomas.index(melhores[0])
+        melhores[1] = melhores[0]
     else:
-        pai1 = genomas.index(melhoresPai1[1])
+        melhor = genomas.index(melhores[1])
+    
+    return melhor
 
-    # seleciona o 2º melhor pai
-    if random.random() > 0.8:
-        melhorPai2 = genomas[1]
-        melhoresPai2[0] = melhorPai2
-        if  melhoresPai2[0] >= melhoresPai2[1]:
-            pai2 =  genomas.index(melhoresPai2[0])
-            melhoresPai2[1] = melhoresPai2[0]
-        else:
-            pai2 = genomas.index(melhoresPai2[1])
-    else: 
-        pai2 = random.randint(0, len(genomas) - 1)
-    #pai2 = pai1
-    return pai1, pai2
 
-def cruzamento(rede1, rede2):
+def mutacao(rede, tx_mut):
+
     
     pesos = {
         'A': [None, None, None],
@@ -62,95 +44,34 @@ def cruzamento(rede1, rede2):
         'F': [None, None, None],
         'G': [None, None, None]
         }
-    
-    corte_bias = random.randrange(0, len(rede1[0]) - 1)
-
-    bias = rede1[0][:corte_bias] + rede2[0][corte_bias:]
-    #bias = [rede2[0][0], rede1[0][1], 
-    #        rede2[0][2], rede2[0][3],
-    #        rede2[0][4],rede2[0][5], 
-    #        rede2[0][6]]
-
-    
-
-
-    pesos['A'][0] = rede1[1]['A'][0]
-    pesos['A'][1] = rede2[1]['A'][1]
-    pesos['A'][2] = rede1[1]['A'][2]
-
-    pesos['B'][0] = rede1[1]['B'][0]
-    pesos['B'][1] = rede2[1]['B'][1]
-    pesos['B'][2] = rede1[1]['B'][2]
-
-    pesos['C'][0] = rede1[1]['C'][0]
-    pesos['C'][1] = rede2[1]['C'][1]
-    
-    pesos['D'][0] = rede1[1]['D'][0]
-    pesos['D'][1] = rede2[1]['D'][1]
-    
-    pesos['E'][0] = rede1[1]['E'][0]
-    pesos['E'][1] = rede2[1]['E'][1]
-    
-    pesos['F'][0] = rede1[1]['F'][0]
-    pesos['F'][1] = rede2[1]['F'][1]
-    pesos['F'][2] = rede1[1]['F'][2]
-    
-    pesos['G'][0] = rede1[1]['G'][0]
-    pesos['G'][1] = rede2[1]['G'][1]
-    pesos['G'][2] = rede1[1]['G'][2]
-
-    rede = (bias, pesos)
-
-    print("fez o cruzamento")
-
-    return rede
-
-def mutacao(rede, tx_mut):
-
-    pesos = {
-        'A': [],
-        'B': [],
-        'C': [],
-        'D': [],
-        'E': [],
-        'F': [],
-        'G': []
-        }
     bias = []
     
     for b in rede[0]:
-        b = (b + (b * tx_mut)) * random.choice([-1, -1.5, 1, 1.5])
+        #b = b * tx_mut
         bias.append(b)
 
-    for i in rede[1]['A']:
-        i = (i+ i * tx_mut) * random.choice([-1, -1.5, 1, 1.5])
-        pesos['A'].append(i)
+    pesos['A'][0] = rede[1]['A'][0] + ((rede[1]['A'][0] * tx_mut) * random.uniform(-1,1))
+    pesos['A'][1] = rede[1]['A'][1] + ((rede[1]['A'][1] * tx_mut) * random.uniform(-1,1))
+    pesos['A'][2] = rede[1]['A'][2] + ((rede[1]['A'][2] * tx_mut) * random.uniform(-1,1))
 
-    for i in rede[1]['B']:
-        i = (i+ i * tx_mut) * random.choice([-1, -1.5, 1, 1.5])
-        pesos['B'].append(i)
+    pesos['B'][0] = rede[1]['B'][0] + ((rede[1]['B'][0] * tx_mut) * random.uniform(-1,1))
+    pesos['B'][1] = rede[1]['B'][1] + ((rede[1]['B'][1] * tx_mut) * random.uniform(-1,1))
+    pesos['B'][2] = rede[1]['B'][2] + ((rede[1]['B'][2] * tx_mut) * random.uniform(-1,1))
 
-    for i in rede[1]['C']:
-        i = (i+ i * tx_mut) * random.choice([-1, -1.5, 1, 1.5])
-        pesos['C'].append(i)  
-
-    for i in rede[1]['D']:
-        i = (i+ i * tx_mut) * random.choice([-1, -1.5, 1, 1.5])
-        pesos['D'].append(i)
-
-    for i in rede[1]['E']:
-        i = (i+ i * tx_mut) * random.choice([-1, -1.5, 1, 1.5])
-        pesos['E'].append(i)
-
-    for i in rede[1]['F']:
-        i = (i+ i * tx_mut) * random.choice([-1, -1.5, 1, 1.5])
-        pesos['F'].append(i)
-
-    for i in rede[1]['G']:
-        i = (i+ i * tx_mut) * random.choice([-1, -1.5, 1, 1.5])
-        pesos['G'].append(i)    
-    
-    return bias, pesos
+    pesos['C'][0] = rede[1]['C'][0] + ((rede[1]['C'][0] * tx_mut) * random.uniform(-1,1))
+    pesos['C'][1] = rede[1]['C'][1] + ((rede[1]['C'][1] * tx_mut) * random.uniform(-1,1))
+    pesos['D'][0] = rede[1]['D'][0] + ((rede[1]['D'][0] * tx_mut) * random.uniform(-1,1))
+    pesos['D'][1] = rede[1]['D'][1] + ((rede[1]['D'][1] * tx_mut) * random.uniform(-1,1))
+    pesos['E'][0] = rede[1]['E'][0] + ((rede[1]['E'][0] * tx_mut) * random.uniform(-1,1))
+    pesos['E'][1] = rede[1]['E'][1] + ((rede[1]['E'][1] * tx_mut) * random.uniform(-1,1))
+    pesos['F'][0] = rede[1]['F'][0] + ((rede[1]['F'][0] * tx_mut) * random.uniform(-1,1))
+    pesos['F'][1] = rede[1]['F'][1] + ((rede[1]['F'][1] * tx_mut) * random.uniform(-1,1))
+    pesos['F'][2] = rede[1]['F'][2] + ((rede[1]['F'][2] * tx_mut) * random.uniform(-1,1))
+    pesos['G'][0] = rede[1]['G'][0] + ((rede[1]['G'][0] * tx_mut) * random.uniform(-1,1))
+    pesos['G'][1] = rede[1]['G'][1] + ((rede[1]['G'][1] * tx_mut) * random.uniform(-1,1))
+    pesos['G'][2] = rede[1]['G'][2] + ((rede[1]['G'][2] * tx_mut) * random.uniform(-1,1))
+    print("sofreu mutação")
+    return bias, pesos    
 
     
         
