@@ -325,7 +325,8 @@ def start(genomas, redes_atualizadas):
         global redes_reserva
         global melhores_redes
         global geracao_consecutiva
-        x = 40
+        x = 20
+        y=250
         for genoma in genomas:
             #rede = neat.nn.FeedForwardNetwork.create(genoma, config)
             if redes_atualizadas == None:
@@ -336,7 +337,8 @@ def start(genomas, redes_atualizadas):
             rede = None
             genoma.fitness = 0 
             list_genomas.append(genoma)
-            birds.append(Bird(x, 350))
+            birds.append(Bird(x, y))
+            y -= 3
             x +=2
                 
         for rede in redes:
@@ -513,10 +515,13 @@ def start(genomas, redes_atualizadas):
                 #    melhores_redes.clear()
                 #    melhores_redes.append(melhores_redes_aux)
                 
-                melhor = ag.selecao(list_genomas_reserva)
+                pai1, pai2 = ag.selecao(list_genomas_reserva)
                 
                 #if random.random() < tx_mut:    
-                rede_nova = redes_reserva[melhor]
+
+                rede_nova = ag.cruzamento(redes_reserva[pai1], redes_reserva[pai2])
+
+                print(rede_nova)
                 
 
                 #melhores_redes.append(rede_nova)
