@@ -40,13 +40,16 @@ class Bird:
     rotacao_max = 25
     velocidade_rotacao = 20
     temp_animacao = 5
+    recarga_dash = 250
+    dash_disponivel = False
 
     #atributos para o pássaro
 
     def __init__(self, pos_x , pos_y):
-
         self.pos_x = pos_x
         self.pos_y = pos_y
+        self.dashe = False
+        self.dash_duracao = 40
         self.angulo = 0
         self.velociade = 0
         self.altura = self.pos_y
@@ -55,10 +58,13 @@ class Bird:
         self.img = self.imgs[0]
 
     def jump (self):
-
+        
         self.velociade = -8.9 
         self.tempo = 0
         self.altura = self.pos_y
+
+    def dash(self):
+        self.dashe = True
 
     def move(self):
 
@@ -74,7 +80,15 @@ class Bird:
         elif deslocamento < 0:
             deslocamento -=2
 
-        self.pos_y += deslocamento
+        if not self.dashe:
+            self.pos_y += deslocamento
+        else:
+            if self.dash_duracao > 0:
+                self.dash_duracao -=1
+            else:
+                self.dash_duracao = 30
+                self.dashe = False
+            
 
         #angulo do pássaro
         if deslocamento < 0 or self.pos_y < (self.altura + 50):
@@ -119,7 +133,8 @@ class Bird:
     def get_mask(self):
         #define uma máscara para o pássaro (melhorando o sistema de colisão)
         return pygame.mask.from_surface(self.img)
-
+    
+  
 class Pipe:
     
     dist = 120 #de um cano para o outro
@@ -137,12 +152,13 @@ class Pipe:
         self.define_altura()
 
     def define_altura(self):
-        self.altura = random.randrange(20, 250)
+        self.altura = random.randrange(20, 300)
         self.pos_top  = self.altura - self.img_top.get_height()
-        self.pos_base = self.altura + self.dist 
+        self.pos_base = self.altura + self.dist
 
     def move(self):
         self.pos_x -= self.vel_move
+
 
     def desenhar(self, tela):
         #desenha os canos
@@ -155,7 +171,7 @@ class Pipe:
         top_mask = pygame.mask.from_surface(self.img_top)
         base_mask = pygame.mask.from_surface(self.img_base)
 
-        distancia_top = (round(self.pos_x) - round(bird.pos_x) , round(self.pos_top) - round(bird.pos_y))
+        distancia_top = (round(self.pos_x) - round(bird.pos_x), round(self.pos_top) - round(bird.pos_y))
         distancia_base = (round(self.pos_x) - round(bird.pos_x), round(self.pos_base) - round(bird.pos_y))
 
         base_point_colider = bird_mask.overlap(base_mask, distancia_base)
@@ -245,6 +261,7 @@ list_genomas_reserva = []
 redes_reserva = []
 melhores_redes = []
 geracao_consecutiva = 0
+
 def start(genomas, redes_atualizadas):
     Pipe.vel_move = 4
 
@@ -253,16 +270,16 @@ def start(genomas, redes_atualizadas):
 
     #instanciando as classes e criando variáveis
     if ia_jogando:
-        redes = [] 
+        redes = []
         list_genomas = []
         birds = []
         tx_mut = 0.03
-
         global list_genomas_reserva
-
         global redes_reserva
         global melhores_redes
         global geracao_consecutiva
+        x = 20
+        y=250
         for genoma in genomas:
             #rede = neat.nn.FeedForwardNetwork.create(genoma, config)
             if redes_atualizadas == None:
@@ -273,7 +290,9 @@ def start(genomas, redes_atualizadas):
             rede = None
             genoma.fitness = 0 
             list_genomas.append(genoma)
-            birds.append(Bird(100, 350))
+            birds.append(Bird(x, y))
+            y -= 3
+            x +=2
                 
         for rede in redes:
             #print(rede[1])
@@ -288,9 +307,21 @@ def start(genomas, redes_atualizadas):
     relogio = pygame.time.Clock()
 
     rodando = True
+    desce = True
+    contador_desce = 0
+    contador_cano = 0
     
-    
+
     while rodando:
+        
+        for bird in birds:
+            if not bird.dash_disponivel:
+                bird.recarga_dash -=1
+
+            if bird.recarga_dash == 0:
+                bird.dash_disponivel = True
+                bird.recarga_dash = 250
+
         relogio.tick(30)
         #fechar a janela
         for event in pygame.event.get():
@@ -299,11 +330,17 @@ def start(genomas, redes_atualizadas):
                 pygame.quit()
                 quit()
             #pulo do pássaro
-            if not ia_jogando:
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        for bird in birds:
-                            bird.jump()
+            #if not ia_jogando:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    for bird in birds:
+                        bird.jump()
+                if event.key == pygame.K_z:
+                    for bird in birds:
+                        if bird.dash_disponivel:
+                            bird.dash()
+                            bird.dash_disponivel = False
+
         indice_pipe = 0
         if len(birds) > 0:
             for bird in birds:
@@ -313,20 +350,26 @@ def start(genomas, redes_atualizadas):
             rodando = False
             break
 
-
+        contador_cano +=1
         #movimentação do pássaro
         ##AQUI RECEBE INFO E DECIDE SE PULA OU NAO
         for i, bird in enumerate(birds):
             bird.move()
+
             list_genomas[i].fitness +=0.1
 
             #output = redes[i].activate((bird.pos_y, abs(bird.pos_y - pipes[indice_pipe].altura), abs(bird.pos_y - pipes[indice_pipe].pos_base)))
-            output = rede_neural.calcula_ativacao(dist_x=(bird.pos_y - pipes[indice_pipe].altura), 
+            output_pulo, output_dash  = rede_neural.calcula_ativacao(dist_x=(bird.pos_y - pipes[indice_pipe].altura), 
                                                      dist_y=abs(bird.pos_y - pipes[indice_pipe].pos_base),
+                                                     largura=pipes[indice_pipe].dist,
                                                      bias=redes[i][0],
                                                      pesos=redes[i][1])
-            if output > 0.5:
+            if output_pulo > 0:
                 bird.jump()
+            if output_dash > 0:
+                if bird.dash_disponivel:
+                    bird.dash()
+                    bird.dash_disponivel = False
             
         #movimentação do chão
         base.move()
@@ -335,6 +378,7 @@ def start(genomas, redes_atualizadas):
         #movimentação dos canos
         add_pipe = False
         remove_pipes = []
+
         for pipe in pipes:
             for i, bird in enumerate(birds):
                 #verifica colisores passaro e cano
@@ -352,10 +396,33 @@ def start(genomas, redes_atualizadas):
                         birds.pop(i)
                     
                 #verifica se o passaro ja passou do cano
-                if not pipe.passou and (bird.pos_x > pipe.pos_x):
+                if not pipe.passou and (bird.pos_x > (pipe.pos_x + 10)):
                     pipe.passou = True
-
+                    # aumenta velocidade
+                    #Pipe.vel_move+=0.2
+                    #if Pipe.vel_move >= 10:
+                    #    Pipe.vel_move = 10
                     add_pipe = True
+                    
+
+            #if desce: 
+            #    contador_desce +=1
+#
+            #    pipe.pos_base +=1
+            #    pipe.pos_top +=1
+            #    if contador_desce == 170:
+            #        contador_desce = 0
+            #        desce = False
+            #else:
+            #    contador_desce +=1
+#
+            #    pipe.pos_base -=1
+            #    pipe.pos_top -=1
+            #    if contador_desce == 170:
+            #        contador_desce = 0
+            #        desce = True
+            
+            
 
             pipe.move()
             if pipe.pos_x + pipe.img_top.get_width() < 0:
@@ -391,23 +458,23 @@ def start(genomas, redes_atualizadas):
                 pass
             if len(list_genomas_reserva) > 0 and len(redes_reserva) > 0:
                 
-                
-               
                 #if len(melhores_redes) >4:
                 #    melhores_redes_aux = melhores_redes[len(melhores_redes) -1]
                 #    melhores_redes.clear()
                 #    melhores_redes.append(melhores_redes_aux)
                 
                 pai1, pai2 = ag.selecao(list_genomas_reserva)
+                
+                #if random.random() < tx_mut:    
 
                 rede_nova = ag.cruzamento(redes_reserva[pai1], redes_reserva[pai2])
+                
+
+                #melhores_redes.append(rede_nova)
             
-                with open("melhor_rede.txt", "w") as mr:
-                    mr.write(str(rede_nova))
                 #list_genomas_reserva.clear()
                 #redes_reserva.clear()
                 
-
             rodar(rede_nova)  
         desenhar_tela(tela, birds, pipes, base, pontos)
             
@@ -417,7 +484,7 @@ def rodar(rede):
 
     
     if ia_jogando:
-        populacao = ag.Genoma.start_população(30)
+        populacao = ag.Genoma.start_população(50)
         start(genomas=populacao, redes_atualizadas = rede)
     else:
         start(None, None)

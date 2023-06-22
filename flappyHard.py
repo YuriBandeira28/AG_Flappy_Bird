@@ -41,7 +41,7 @@ class Bird:
     rotacao_max = 25
     velocidade_rotacao = 20
     temp_animacao = 5
-    recarga_dash = 250
+    recarga_dash = 190
     dash_disponivel = False
 
     #atributos para o pássaro
@@ -367,7 +367,7 @@ def start(genomas, redes_atualizadas):
 
             if bird.recarga_dash == 0:
                 bird.dash_disponivel = True
-                bird.recarga_dash = 250
+                bird.recarga_dash = 190
 
         relogio.tick(30)
         #fechar a janela
@@ -411,6 +411,7 @@ def start(genomas, redes_atualizadas):
                                                      largura=pipes[indice_pipe].dist,
                                                      bias=redes[i][0],
                                                      pesos=redes[i][1])
+            
             if output_pulo > 0:
                 bird.jump()
             if output_dash > 0:
@@ -477,7 +478,7 @@ def start(genomas, redes_atualizadas):
         
         if add_pipe:
             pontos += 1
-            if contador_cano >= 300:
+            if contador_cano >= 200:
                 contador_cano = 0
                 pipes.append(PipePequeno(1100))
                 print("cano pequeno")
