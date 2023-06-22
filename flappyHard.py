@@ -520,8 +520,6 @@ def start(genomas, redes_atualizadas):
                 #if random.random() < tx_mut:    
 
                 rede_nova = ag.cruzamento(redes_reserva[pai1], redes_reserva[pai2])
-
-                print(rede_nova)
                 
 
                 #melhores_redes.append(rede_nova)
