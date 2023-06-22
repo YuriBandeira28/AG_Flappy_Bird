@@ -443,7 +443,7 @@ def start(genomas, redes_atualizadas):
                         birds.pop(i)
                     
                 #verifica se o passaro ja passou do cano
-                if not pipe.passou and (bird.pos_x > pipe.pos_x):
+                if not pipe.passou and (bird.pos_x > (pipe.pos_x + 10)):
                     pipe.passou = True
                     # aumenta velocidade
                     #Pipe.vel_move+=0.2
