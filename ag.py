@@ -29,6 +29,7 @@ def selecao(genomas):
         melhores[1] = melhores[0]
     else:
         pai1 = genomas.index(melhores[1])
+        
     if np.isclose(a = max(genomas), b = genomas1[-1], atol=3):
         pai2 = genomas1.index(genomas1[-1])
         pai1 = genomas.index(genomas[random.randrange(0, len(genomas) -1)])
@@ -37,7 +38,7 @@ def selecao(genomas):
     else:
         pai2 = genomas.index(genomas[random.randrange(0, len(genomas) -1)])
         print("pegou o aleatorio")
-        return pai1, pai2
+        return pai1, pai1
 
 def cruzamento(rede1, rede2):
     
@@ -47,8 +48,14 @@ def cruzamento(rede1, rede2):
         'C': [None, None],
         'D': [None, None],
         'E': [None, None],
-        'F': [None, None, None],
-        'G': [None, None, None]
+        'F': [None, None],
+        'G': [None, None],
+        'H': [None, None],
+
+        'I': [None, None, None,
+              None, None, None],
+        'J': [None, None, None,
+              None, None, None]
         }
     
     corte_bias = random.randrange(0, len(rede1[0]) - 1)
@@ -64,22 +71,42 @@ def cruzamento(rede1, rede2):
     pesos['B'][1] = rede2[1]['B'][1]
     pesos['B'][2] = rede1[1]['B'][2]
 
-    pesos['C'][0] = rede2[1]['C'][0]
-    pesos['C'][1] = rede1[1]['C'][1]
+    pesos['C'][0] = rede1[1]['C'][0]
+    pesos['C'][1] = rede2[1]['C'][1]
     
     pesos['D'][0] = rede2[1]['D'][0]
     pesos['D'][1] = rede2[1]['D'][1]
     
-    pesos['E'][0] = rede2[1]['E'][0]
+    pesos['E'][0] = rede1[1]['E'][0]
     pesos['E'][1] = rede1[1]['E'][1]
-    
+
     pesos['F'][0] = rede2[1]['F'][0]
-    pesos['F'][1] = rede1[1]['F'][1]
-    pesos['F'][2] = rede1[1]['F'][2]
-    
-    pesos['G'][0] = rede1[1]['G'][0]
+    pesos['F'][1] = rede2[1]['F'][1]
+
+    pesos['G'][0] = rede2[1]['G'][0]
     pesos['G'][1] = rede2[1]['G'][1]
-    pesos['G'][2] = rede1[1]['G'][2]
+
+    pesos['H'][0] = rede2[1]['H'][0]
+    pesos['H'][1] = rede2[1]['H'][1]
+
+    
+    pesos['I'][0] = rede1[1]['J'][0]
+    pesos['I'][1] = rede2[1]['J'][1]
+    pesos['I'][2] = rede1[1]['J'][2]
+    pesos['I'][3] = rede1[1]['J'][3]
+    pesos['I'][4] = rede2[1]['J'][4]
+    pesos['I'][5] = rede1[1]['J'][5]    
+
+
+
+    pesos['J'][0] = rede1[1]['J'][0]
+    pesos['J'][1] = rede2[1]['J'][1]
+    pesos['J'][2] = rede1[1]['J'][2]
+    pesos['J'][3] = rede1[1]['J'][3]
+    pesos['J'][4] = rede2[1]['J'][4]
+    pesos['J'][5] = rede1[1]['J'][5]
+
+
 
     rede = (bias, pesos)
 
@@ -96,8 +123,13 @@ def mutacao(rede, tx_mut):
         'C': [None, None],
         'D': [None, None],
         'E': [None, None],
-        'F': [None, None, None],
-        'G': [None, None, None]
+        'F': [None, None],
+        'G': [None, None],
+        'H': [None, None],
+        'I': [None, None, None,
+              None, None, None],
+        'J': [None, None, None,
+              None, None, None]
         }
     bias = []
     
@@ -105,27 +137,45 @@ def mutacao(rede, tx_mut):
         #b = b * tx_mut
         bias.append(b)
 
-    pesos['A'][0] = rede[1]['A'][0] + ((rede[1]['A'][0] * tx_mut) * random.uniform(-5,15))
-    pesos['A'][1] = rede[1]['A'][1] + ((rede[1]['A'][1] * tx_mut) * random.uniform(-5,15))
-    pesos['A'][2] = rede[1]['A'][2] + ((rede[1]['A'][2] * tx_mut) * random.uniform(-5,15))
-    pesos['B'][0] = rede[1]['B'][0] + ((rede[1]['B'][0] * tx_mut) * random.uniform(-5,15))
-    pesos['B'][1] = rede[1]['B'][1] + ((rede[1]['B'][1] * tx_mut) * random.uniform(-5,15))
-    pesos['B'][2] = rede[1]['B'][2] + ((rede[1]['B'][2] * tx_mut) * random.uniform(-5,15))
-    pesos['C'][0] = rede[1]['C'][0] + ((rede[1]['C'][0] * tx_mut) * random.uniform(-5,15))
-    pesos['C'][1] = rede[1]['C'][1] + ((rede[1]['C'][1] * tx_mut) * random.uniform(-5,15))
-    pesos['D'][0] = rede[1]['D'][0] + ((rede[1]['D'][0] * tx_mut) * random.uniform(-5,15))
-    pesos['D'][1] = rede[1]['D'][1] + ((rede[1]['D'][1] * tx_mut) * random.uniform(-5,15))
-    pesos['E'][0] = rede[1]['E'][0] + ((rede[1]['E'][0] * tx_mut) * random.uniform(-5,15))
-    pesos['E'][1] = rede[1]['E'][1] + ((rede[1]['E'][1] * tx_mut) * random.uniform(-5,15))
-    pesos['F'][0] = rede[1]['F'][0] + ((rede[1]['F'][0] * tx_mut) * random.uniform(-5,15))
-    pesos['F'][1] = rede[1]['F'][1] + ((rede[1]['F'][1] * tx_mut) * random.uniform(-5,15))
-    pesos['F'][2] = rede[1]['F'][2] + ((rede[1]['F'][2] * tx_mut) * random.uniform(-5,15))
-    pesos['G'][0] = rede[1]['G'][0] + ((rede[1]['G'][0] * tx_mut) * random.uniform(-5,15))
-    pesos['G'][1] = rede[1]['G'][1] + ((rede[1]['G'][1] * tx_mut) * random.uniform(-5,15))
-    pesos['G'][2] = rede[1]['G'][2] + ((rede[1]['G'][2] * tx_mut) * random.uniform(-5,15))
-    #print("sofreu mutação"
-    return bias, pesos    
+    if random.random() < tx_mut:
+        pesos['A'][0] = rede[1]['A'][0] + ((rede[1]['A'][0] * tx_mut) +(rede[1]['A'][0] * random.uniform(1,3)))
+        pesos['A'][1] = rede[1]['A'][1] + ((rede[1]['A'][1] * tx_mut) +(rede[1]['A'][1] * random.uniform(1,3)))
+        pesos['A'][2] = rede[1]['A'][2] + ((rede[1]['A'][2] * tx_mut) +(rede[1]['A'][2] * random.uniform(1,3)))
+        pesos['B'][0] = rede[1]['B'][0] + ((rede[1]['B'][0] * tx_mut) +(rede[1]['B'][0] * random.uniform(1,3)))
+        pesos['B'][1] = rede[1]['B'][1] + ((rede[1]['B'][1] * tx_mut) +(rede[1]['B'][1] * random.uniform(1,3)))
+        pesos['B'][2] = rede[1]['B'][2] + ((rede[1]['B'][2] * tx_mut) +(rede[1]['B'][2] * random.uniform(1,3)))
+        pesos['C'][0] = rede[1]['C'][0] + ((rede[1]['C'][0] * tx_mut) +(rede[1]['C'][0] * random.uniform(1,3)))
+        pesos['C'][1] = rede[1]['C'][1] + ((rede[1]['C'][1] * tx_mut) +(rede[1]['C'][1] * random.uniform(1,3)))
+        pesos['D'][0] = rede[1]['D'][0] + ((rede[1]['D'][0] * tx_mut) +(rede[1]['D'][0] * random.uniform(1,3)))
+        pesos['D'][1] = rede[1]['D'][1] + ((rede[1]['D'][1] * tx_mut) +(rede[1]['D'][1] * random.uniform(1,3)))
+        pesos['E'][0] = rede[1]['E'][0] + ((rede[1]['E'][0] * tx_mut) +(rede[1]['E'][0] * random.uniform(1,3)))
+        pesos['E'][1] = rede[1]['E'][1] + ((rede[1]['E'][1] * tx_mut) +(rede[1]['E'][1] * random.uniform(1,3)))
+        pesos['F'][0] = rede[1]['F'][0] + ((rede[1]['F'][0] * tx_mut) +(rede[1]['F'][0] * random.uniform(1,3)))
+        pesos['F'][1] = rede[1]['F'][1] + ((rede[1]['F'][1] * tx_mut) +(rede[1]['F'][1] * random.uniform(1,3)))
+        pesos['G'][0] = rede[1]['G'][0] + ((rede[1]['G'][0] * tx_mut) +(rede[1]['G'][0] * random.uniform(1,3)))
+        pesos['G'][1] = rede[1]['G'][1] + ((rede[1]['G'][1] * tx_mut) +(rede[1]['G'][1] * random.uniform(1,3)))
+        pesos['H'][0] = rede[1]['H'][0] + ((rede[1]['H'][0] * tx_mut) +(rede[1]['H'][0] * random.uniform(1,3)))
+        pesos['H'][1] = rede[1]['H'][1] + ((rede[1]['H'][1] * tx_mut) +(rede[1]['H'][1] * random.uniform(1,3)))
+        pesos['I'][0] = rede[1]['I'][0] + ((rede[1]['I'][0] * tx_mut) +(rede[1]['I'][0] * random.uniform(1,3)))
+        pesos['I'][1] = rede[1]['I'][1] + ((rede[1]['I'][1] * tx_mut) +(rede[1]['I'][1] * random.uniform(1,3)))
+        pesos['I'][2] = rede[1]['I'][2] + ((rede[1]['I'][2] * tx_mut) +(rede[1]['I'][2] * random.uniform(1,3)))
+        pesos['I'][3] = rede[1]['I'][3] + ((rede[1]['I'][3] * tx_mut) +(rede[1]['I'][3] * random.uniform(1,3)))
+        pesos['I'][4] = rede[1]['I'][4] + ((rede[1]['I'][4] * tx_mut) +(rede[1]['I'][4] * random.uniform(1,3)))
+        pesos['I'][5] = rede[1]['I'][5] + ((rede[1]['I'][1] * tx_mut) +(rede[1]['I'][1] * random.uniform(1,3)))
+        pesos['J'][0] = rede[1]['J'][0] + ((rede[1]['J'][0] * tx_mut) +(rede[1]['J'][0] * random.uniform(1,3)))
+        pesos['J'][1] = rede[1]['J'][1] + ((rede[1]['J'][1] * tx_mut) +(rede[1]['J'][1] * random.uniform(1,3)))
+        pesos['J'][2] = rede[1]['J'][2] + ((rede[1]['J'][2] * tx_mut) +(rede[1]['J'][2] * random.uniform(1,3)))
+        pesos['J'][3] = rede[1]['J'][3] + ((rede[1]['J'][3] * tx_mut) +(rede[1]['J'][3] * random.uniform(1,3)))
+        pesos['J'][4] = rede[1]['J'][4] + ((rede[1]['J'][4] * tx_mut) +(rede[1]['J'][4] * random.uniform(1,3)))
+        pesos['J'][5] = rede[1]['J'][5] + ((rede[1]['J'][1] * tx_mut) +(rede[1]['J'][1] * random.uniform(1,3)))
 
-    
-        
-        
+
+
+        #print("sofreu mutação"
+        return bias, pesos  
+    else:
+        return rede[0], rede[1]  
+
+
+            
+            

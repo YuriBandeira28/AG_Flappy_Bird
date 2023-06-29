@@ -377,16 +377,16 @@ def start(genomas, redes_atualizadas):
                 pygame.quit()
                 quit()
             #pulo do pássaro
-            #if not ia_jogando:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    for bird in birds:
-                        bird.jump()
-                if event.key == pygame.K_z:
-                    for bird in birds:
-                        if bird.dash_disponivel:
-                            bird.dash()
-                            bird.dash_disponivel = False
+            if not ia_jogando:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        for bird in birds:
+                            bird.jump()
+                    if event.key == pygame.K_z:
+                        for bird in birds:
+                            if bird.dash_disponivel:
+                                bird.dash()
+                                bird.dash_disponivel = False
 
         indice_pipe = 0
         if len(birds) > 0:
@@ -412,9 +412,9 @@ def start(genomas, redes_atualizadas):
                                                      bias=redes[i][0],
                                                      pesos=redes[i][1])
             
-            if output_pulo > 0:
+            if output_pulo > 0.00:
                 bird.jump()
-            if output_dash > 0:
+            if output_dash > 0.00:
                 if bird.dash_disponivel:
                     bird.dash()
                     bird.dash_disponivel = False
