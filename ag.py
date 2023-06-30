@@ -72,7 +72,7 @@ def cruzamento(rede1, rede2):
     pesos['B'][2] = rede1[1]['B'][2]
 
     pesos['C'][0] = rede1[1]['C'][0]
-    pesos['C'][1] = rede2[1]['C'][1]
+    pesos['C'][1] = rede1[1]['C'][1]
     
     pesos['D'][0] = rede2[1]['D'][0]
     pesos['D'][1] = rede2[1]['D'][1]
@@ -83,8 +83,8 @@ def cruzamento(rede1, rede2):
     pesos['F'][0] = rede2[1]['F'][0]
     pesos['F'][1] = rede2[1]['F'][1]
 
-    pesos['G'][0] = rede2[1]['G'][0]
-    pesos['G'][1] = rede2[1]['G'][1]
+    pesos['G'][0] = rede1[1]['G'][0]
+    pesos['G'][1] = rede1[1]['G'][1]
 
     pesos['H'][0] = rede2[1]['H'][0]
     pesos['H'][1] = rede2[1]['H'][1]
