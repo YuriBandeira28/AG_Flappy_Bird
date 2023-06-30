@@ -326,7 +326,9 @@ def start(genomas, redes_atualizadas):
         global melhores_redes
         global geracao_consecutiva
         x = 20
-        y=250
+        y=350
+        maxX = 100
+        maxY = 100
         for genoma in genomas:
             #rede = neat.nn.FeedForwardNetwork.create(genoma, config)
             if redes_atualizadas == None:
@@ -338,8 +340,16 @@ def start(genomas, redes_atualizadas):
             genoma.fitness = 0 
             list_genomas.append(genoma)
             birds.append(Bird(x, y))
-            y -= 3
+            
+           
+            if x >= maxX:
+                x = maxX
             x +=2
+            
+            if y <= maxY:
+                y = maxY
+            y -= 3
+
                 
         for rede in redes:
             #print(rede[1])
@@ -368,8 +378,8 @@ def start(genomas, redes_atualizadas):
             if bird.recarga_dash == 0:
                 bird.dash_disponivel = True
                 bird.recarga_dash = 190
-
-        relogio.tick(30)
+                
+        relogio.tick(300)
         #fechar a janela
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -434,7 +444,7 @@ def start(genomas, redes_atualizadas):
                     if ia_jogando:
                         birds.pop(i)
                         
-                        list_genomas[i].fitness -=1
+                        list_genomas[i].fitness -=2
                         list_genomas_reserva.append(list_genomas[i].fitness)
                         list_genomas.pop(i)
                         
@@ -537,7 +547,7 @@ def rodar(rede):
 
     
     if ia_jogando:
-        populacao = ag.Genoma.start_população(50)
+        populacao = ag.Genoma.start_população(100)
         start(genomas=populacao, redes_atualizadas = rede)
     else:
         start(None, None)
