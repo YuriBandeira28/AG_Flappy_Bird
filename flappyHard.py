@@ -41,7 +41,7 @@ class Bird:
     rotacao_max = 25
     velocidade_rotacao = 20
     temp_animacao = 5
-    recarga_dash = 190
+    recarga_dash = 200
     dash_disponivel = False
 
     #atributos para o pássaro
@@ -358,7 +358,7 @@ def start(genomas, redes_atualizadas):
     else:
         birds = [Bird(100, 400)]
     base = Base(500)
-    pipes = [Pipe(300),Pipe(500),Pipe(700), Pipe(900), Pipe(1100)]
+    pipes = [Pipe(300),Pipe(500),Pipe(700), Pipe(900), PipePequeno(1100)]
     tela = pygame.display.set_mode((win_width, win_height))
     pontos = 0
     relogio = pygame.time.Clock()
@@ -377,7 +377,7 @@ def start(genomas, redes_atualizadas):
 
             if bird.recarga_dash == 0:
                 bird.dash_disponivel = True
-                bird.recarga_dash = 190
+                bird.recarga_dash = 200
                 
         relogio.tick(300)
         #fechar a janela
@@ -442,17 +442,20 @@ def start(genomas, redes_atualizadas):
                 #verifica colisores passaro e cano
                 if pipe.colider(bird):
                     if ia_jogando:
-                        birds.pop(i)
                         
                         if birds[i].dashe == True:
-                            list_genomas[i].fitness -=10
+                            print("tirou 3 pontos")
+                            list_genomas[i].fitness -=3
                             list_genomas_reserva.append(list_genomas[i].fitness)
                             list_genomas.pop(i)
                         else:
-                            list_genomas[i].fitness -=2
+                            print("tirou 1 ponto")
+
+                            list_genomas[i].fitness -=1
                             list_genomas_reserva.append(list_genomas[i].fitness)
                             list_genomas.pop(i)
-                        
+                            
+                        birds.pop(i)
                         redes_reserva.append(redes[i])
                         redes.pop(i)
                     else:
@@ -467,7 +470,7 @@ def start(genomas, redes_atualizadas):
                     #    Pipe.vel_move = 10
                     add_pipe = True
                     
-
+            """
             if desce: 
                 contador_desce +=1
 
@@ -484,7 +487,7 @@ def start(genomas, redes_atualizadas):
                 if contador_desce == 170:
                     contador_desce = 0
                     desce = True
-            
+            """
             
 
             pipe.move()
@@ -552,7 +555,7 @@ def rodar(rede):
 
     
     if ia_jogando:
-        populacao = ag.Genoma.start_população(30)
+        populacao = ag.Genoma.start_população(70)
         start(genomas=populacao, redes_atualizadas = rede)
     else:
         start(None, None)
