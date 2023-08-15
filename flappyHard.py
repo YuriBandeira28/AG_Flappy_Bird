@@ -444,9 +444,14 @@ def start(genomas, redes_atualizadas):
                     if ia_jogando:
                         birds.pop(i)
                         
-                        list_genomas[i].fitness -=2
-                        list_genomas_reserva.append(list_genomas[i].fitness)
-                        list_genomas.pop(i)
+                        if birds[i].dashe == True:
+                            list_genomas[i].fitness -=10
+                            list_genomas_reserva.append(list_genomas[i].fitness)
+                            list_genomas.pop(i)
+                        else:
+                            list_genomas[i].fitness -=2
+                            list_genomas_reserva.append(list_genomas[i].fitness)
+                            list_genomas.pop(i)
                         
                         redes_reserva.append(redes[i])
                         redes.pop(i)
@@ -463,22 +468,22 @@ def start(genomas, redes_atualizadas):
                     add_pipe = True
                     
 
-            #if desce: 
-            #    contador_desce +=1
-#
-            #    pipe.pos_base +=1
-            #    pipe.pos_top +=1
-            #    if contador_desce == 170:
-            #        contador_desce = 0
-            #        desce = False
-            #else:
-            #    contador_desce +=1
-#
-            #    pipe.pos_base -=1
-            #    pipe.pos_top -=1
-            #    if contador_desce == 170:
-            #        contador_desce = 0
-            #        desce = True
+            if desce: 
+                contador_desce +=1
+
+                pipe.pos_base +=1
+                pipe.pos_top +=1
+                if contador_desce == 170:
+                    contador_desce = 0
+                    desce = False
+            else:
+                contador_desce +=1
+
+                pipe.pos_base -=1
+                pipe.pos_top -=1
+                if contador_desce == 170:
+                    contador_desce = 0
+                    desce = True
             
             
 
@@ -547,7 +552,7 @@ def rodar(rede):
 
     
     if ia_jogando:
-        populacao = ag.Genoma.start_população(2000)
+        populacao = ag.Genoma.start_população(30)
         start(genomas=populacao, redes_atualizadas = rede)
     else:
         start(None, None)
