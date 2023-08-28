@@ -379,7 +379,7 @@ def start(genomas, redes_atualizadas):
                 bird.dash_disponivel = True
                 bird.recarga_dash = 200
                 
-        relogio.tick(300)
+        relogio.tick(60)
         #fechar a janela
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -443,14 +443,13 @@ def start(genomas, redes_atualizadas):
                 if pipe.colider(bird):
                     if ia_jogando:
                         
-                        if birds[i].dashe == True:
-                            print("tirou 3 pontos")
-                            list_genomas[i].fitness -=3
+                        if pipe.dist == 60:
+                            print("tirou 5 pontos")
+                            list_genomas[i].fitness -=6
                             list_genomas_reserva.append(list_genomas[i].fitness)
                             list_genomas.pop(i)
                         else:
                             print("tirou 1 ponto")
-
                             list_genomas[i].fitness -=1
                             list_genomas_reserva.append(list_genomas[i].fitness)
                             list_genomas.pop(i)
